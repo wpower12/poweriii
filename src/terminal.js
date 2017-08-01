@@ -66,14 +66,14 @@ jQuery(function($, undefined) {
                     case "cd":
                         commandCD(term, command);
                         break;
-                    case "cv":
-                        commandCV(term);
-                        break;
                     case "ls":
                         commandLS(term);
                         break;
                     case "read":
                         commandRead(term, command);
+                        break;
+                    case "cv":
+                        commandGoTo("http://poweriii.com/resume.php");
                         break;
                     case "github":
                         commandGoTo("https://github.com/wpower12");
@@ -85,19 +85,16 @@ jQuery(function($, undefined) {
                         commandGoTo("/projects/forces.html");
                         break;
                     case "unitgp":
-                        // commandUnitGP(term);
+                        commandGoTo("/projects/unitgp.html");
                         break;
                     case "traffic":
-                        // commandTraffic(term);
+                        commandGoTo("/projects/traffic.html");
                         break;
                     case "tribes":
-                        // commandTribes(term);
+                        commandGoTo("/projects/tribes.html");
                         break;
                     case "procgen":
-                        // commandProcgen(term);
-                        break;
-                    case "procgenstl":
-                        // commandProcgenstl(term);
+                        commandGoTo("/projects/procgen.html");
                         break;
                     case "":
                         term.echo("");
@@ -140,11 +137,26 @@ function commandHelp(t) {
     t.echo("     [[;#BAE4F0;]github] - Github Profile");
     t.echo("   [[;#BAE4F0;]linkedin] - Linkedin Profile")
 }
+    
+function commandCD(t, e) {
+    var i = e.split(" ")[1], n = !1;
+    for (var r in directory[curr_dir]) "dir" == directory[curr_dir][r].type && directory[curr_dir][r].name == i && (n = !0);
+    n && (prev_dir = curr_dir, curr_dir = i, t.set_prompt("[[;#fff;]poweriii] [[b;#4C4CA6;]::] [[;#fff;]~/" + curr_dir + "] [[b;#4C4CA6;]% ] "), console.log("Changed Directory to: " + i)), ".." == i && "home" != curr_dir && (curr_dir = prev_dir, "home" == curr_dir ? t.set_prompt("[[;#fff;]poweriii] [[b;#4C4CA6;]::] [[;#fff;]~ ] [[b;#4C4CA6;]% ] ") : t.set_prompt("[[;#fff;]poweriii] [[b;#4C4CA6;]::] [[;#fff;]~/" + curr_dir + "] [[b;#4C4CA6;]% ] "))
+}
 
 function commandLS(t) {
-    for(var e in directory[curr_dir]) t.echo(directory[curr_dir][e].tag), "raw"
+    for(var e in directory[curr_dir]){
+        t.echo(directory[curr_dir][e].tag);
+    }
+}
+
+function commandRead(t, e) {
+    var i, n = e.split(" ")[1], r = !1;
+    for (var s in directory[curr_dir]) "file" == directory[curr_dir][s].type && directory[curr_dir][s].name == n && (r = !0, i = directory[curr_dir][s]);
+    r ? t.echo(i.body) : t.echo("file not found");
 }
 
 function commandGoTo(t) {
+    // Little hacky but w.e.
     window.location.href = t
 }

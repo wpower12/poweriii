@@ -1,10 +1,13 @@
 const path = require('path');
 
 module.exports = {
-  entry: './src/terminal.js',
+  entry: {
+    index: './src/terminal.js',
+    forces: './src/projects/forces.js'
+  },
   output: {
-    filename: './js/bundle_front.js',
-    path: path.resolve(__dirname, 'dist')
+    filename: '[name]_bundle.js',
+    path: __dirname + '/dist/js'
   },
   module: {
   	rules: [
