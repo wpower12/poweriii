@@ -1,0 +1,23 @@
+{
+  "name": "poweriii",
+  "version": "1.0.0",
+  "description": "Personal Site of William Power.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack"
+  },
+  "keywords": [],
+  "author": "wpower3",
+  "license": "ISC",
+  "devDependencies": {
+    "css-loader": "^0.28.4",
+    "style-loader": "^0.18.2",
+    "webpack": "^3.4.1"
+  },
+  "dependencies": {
+    "lodash": "^4.17.4",
+    "jQuery": "^3.0.0",
+    "jquery.terminal": "^1.5.2"
+  }
+}
