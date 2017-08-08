@@ -1,0 +1,32 @@
+  <html>
+   <head>
+    <title>traffic</title>
+    <link rel="shortcut icon" href="../favicon.ico" />
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.terminal/1.5.2/js/jquery.terminal.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery.terminal/1.5.2/css/jquery.terminal.min.css" rel="stylesheet"/>
+   </head>
+   <body>
+   <div class="container">
+    <div class="terminal">
+      <canvas id="tribescanvas" width="550" height="350" tabindex="0"></canvas> 
+      <div id="road_control" class="textcontrols bar" style="height: inherit;">
+        <ul>
+          <li style="text-align: center;">
+             -q [<span id="fpsfield">10</span>] +w <br>
+            <span>fps</span>
+          </li><li>&nbsp;||&nbsp;</li>
+          <li style="text-align: center;">
+            -a [<span id="fillfield">50</span>] +s <br>
+            <span>fill %</span>
+          </li><li>&nbsp;||&nbsp;</li>
+          <li style="text-align: center;">
+             -z [<span id="scalefield">8</span>] +x <br>
+            <span>scale</span>
+          </li>
+        </ul>
+      </div>
+   </div>
+    <script src="/js/tribes_bundle.js"></script>
+   </body>
+  </html>
