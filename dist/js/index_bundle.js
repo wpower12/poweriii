@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 5);
+/******/ 	return __webpack_require__(__webpack_require__.s = 9);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -103,7 +103,7 @@ exports = module.exports = __webpack_require__(2)(undefined);
 
 
 // module
-exports.push([module.i, "body {\n    padding-top: 20px;\n    padding-bottom: 20px;\n    background: #333;\n}\n\n.container {\n\tmargin-right: auto;\n    margin-left: auto;\n    padding-left: 15px;\n    padding-right: 15px;\n    width: 600px;\n}\n\n.cmd, .terminal {\n    font-family: Consolas,monaco,monospace;\n    color: #aea79f;\n    background-color: #2c001e;\n    font-size: 14px;\n    line-height: 18px;\n}\n", ""]);
+exports.push([module.i, "div {\n    display: block;\n}\n\nbody {\n    padding-top: 20px;\n    padding-bottom: 20px;\n    background: #333;\n}\n\ncanvas {\n    outline: none;\n    display: inline-block;\n    vertical-align: baseline;\n}\n\nol, ul {\n    margin-top: 0;\n    margin-bottom: 10px;\n}\n\n.terminal, .cmd, .terminal .terminal-output div div, .cmd .prompt {\n    font-size: 14px;\n    line-height: 18px;\n}\n\n.cmd, .terminal, .forceterminal {\n    font-family: Consolas,monaco,monospace;\n    color: #aea79f;\n    background-color: #2c001e;\n    font-size: 14px;\n    line-height: 18px;\n}\n\n.forceterminal {\n    padding: 10px;\n    overflow: auto;\n    position: relative;\n}\n\n.container {\n    margin-right: auto;\n    margin-left: auto;\n    padding-left: 15px;\n    padding-right: 15px;\n    width: 600px;\n}\n\n.bar {\n    float: right;\n    left: -50%;\n    text-align: left;\n    height: inherit;\n}\n\n.bar, .bar ul {\n    position: relative;\n}\n\n.bar ul {\n    list-style: none;\n    left: 45%;\n}\n\n.bar li {\n    float: left;\n    position: relative;\n}\n\n.textcontrols {\n    margin-top: 5px;\n}\n\n*, :after, :before {\n    box-sizing: border-box;\n}\n\n", ""]);
 
 // exports
 
@@ -645,7 +645,11 @@ module.exports = function (css) {
 
 
 /***/ }),
-/* 5 */
+/* 5 */,
+/* 6 */,
+/* 7 */,
+/* 8 */,
+/* 9 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -718,6 +722,9 @@ jQuery(function($, undefined) {
                         commandHelp(term);
                         break;
                     case "cd":
+                        if( i.length > 1 && i[1] == "blog" ){
+                            commandGoTo("/blog.html")
+                        }
                         commandCD(term, command);
                         break;
                     case "ls":

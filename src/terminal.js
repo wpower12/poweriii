@@ -64,6 +64,9 @@ jQuery(function($, undefined) {
                         commandHelp(term);
                         break;
                     case "cd":
+                        if( i.length > 1 && i[1] == "blog" ){
+                            commandGoTo("/blog.html")
+                        }
                         commandCD(term, command);
                         break;
                     case "ls":

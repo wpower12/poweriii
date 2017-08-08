@@ -1,21 +1,77 @@
+div {
+    display: block;
+}
+
 body {
     padding-top: 20px;
     padding-bottom: 20px;
     background: #333;
 }
 
-.container {
-	margin-right: auto;
-    margin-left: auto;
-    padding-left: 15px;
-    padding-right: 15px;
-    width: 600px;
+canvas {
+    outline: none;
+    display: inline-block;
+    vertical-align: baseline;
 }
 
-.cmd, .terminal {
+ol, ul {
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.terminal, .cmd, .terminal .terminal-output div div, .cmd .prompt {
+    font-size: 14px;
+    line-height: 18px;
+}
+
+.cmd, .terminal, .forceterminal {
     font-family: Consolas,monaco,monospace;
     color: #aea79f;
     background-color: #2c001e;
     font-size: 14px;
     line-height: 18px;
 }
+
+.forceterminal {
+    padding: 10px;
+    overflow: auto;
+    position: relative;
+}
+
+.container {
+    margin-right: auto;
+    margin-left: auto;
+    padding-left: 15px;
+    padding-right: 15px;
+    width: 600px;
+}
+
+.bar {
+    float: right;
+    left: -50%;
+    text-align: left;
+    height: inherit;
+}
+
+.bar, .bar ul {
+    position: relative;
+}
+
+.bar ul {
+    list-style: none;
+    left: 45%;
+}
+
+.bar li {
+    float: left;
+    position: relative;
+}
+
+.textcontrols {
+    margin-top: 5px;
+}
+
+*, :after, :before {
+    box-sizing: border-box;
+}
+

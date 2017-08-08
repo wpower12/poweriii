@@ -1,0 +1,88 @@
+  <html>
+   <head>
+    <title>traffic</title>
+    <link rel="shortcut icon" href="../favicon.ico" />
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.terminal/1.5.2/js/jquery.terminal.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery.terminal/1.5.2/css/jquery.terminal.min.css" rel="stylesheet"/>
+   </head>
+   <body>
+   <div class="container">
+    <div class="terminal">
+      <canvas id="trafficcanvas" width="550" height="350" tabindex="0"></canvas>
+      <div class="bar" style="height: inherit;">
+        <ul>
+          <li id="road"> [r]oad </li><li>&nbsp;||&nbsp;</li>
+          <li id="intersection"> 'i'ntersection </li><li>&nbsp;||&nbsp;</li>
+          <li id="car"> 'c'ar </li><li>&nbsp;||&nbsp;</li>
+          <li id="connections"> c'o'nnect </li><li>&nbsp;||&nbsp;</li>
+          <li id="delete"> 'd'elete </li>
+        </ul>c
+      </div>   
+
+      <div id="road_control" class="textcontrols bar" style="height: inherit;">
+        <ul>
+          <li style="text-align: center;">
+             -q [<span id="roador">0</span>] +w <br>
+            <span>orientation</span>
+          </li>
+          <li style="text-align: center;">
+            -a [<span id="length">10</span>] +s <br>
+            <span>length   </span>
+          </li>
+          <li style="text-align: center;">
+             -z [<span id="road_lanes">2</span>] +x <br>
+            <span>lanes</span>
+          </li>
+        </ul>
+      </div>
+
+      <div id="inter_control" class="textcontrols bar" style="height: inherit;">
+        <ul>
+          <li style="text-align: center;">
+             -z [<span id="int_lanes">2</span>] +x <br>
+            <span>lanes</span>
+          </li>
+        </ul>
+      </div>
+
+      <div id="car_control" class="textcontrols bar" style="height: inherit;">
+        <ul>
+          <li style="text-align: center;">
+            -q [<span id="color">1</span>] +w <br>
+            <span>color</span>
+          </li>
+          <li>|| </li>
+          <li style="text-align: center;">
+             -a [<span id="type">Normal</span>] +s <br>
+            <span>driver</span>
+          </li>
+          <li>|| </li>
+          <li style="text-align: center;">
+            -z [<span id="speed">20</span>] +x <br>
+            <span>speed</span>  
+          </li>
+        </ul>
+      </div>
+
+      <div id="conn_control" class="textcontrols bar" style="height: inherit;">
+        <ul>
+          <li style="text-align: center;">
+             Click roads and intersections to make connections.
+          </li>
+        </ul>
+      </div>
+
+      <div id="delete_control" class="textcontrols bar" style="height: inherit;">
+        <ul>
+          <li style="text-align: center;">
+             Click items to delete. 
+          </li>
+        </ul>
+      </div>
+
+    </div>
+   </div>
+    <script src="/js/traffic_bundle.js"></script>
+   </body>
+  </html>
