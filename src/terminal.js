@@ -27,24 +27,24 @@ var directory = {
             tag: " [[;#BAE4F0;]traffic] - Traffic Simulation",
             about: "Traffic is a grid based simulation of cars in a flow of \ntraffic. It comes with three possible types of driver; a sane\ndriver that always tries to be in the slow lane unless it \nneeds to pass, a fast driver that always stays in the fast \nlane, and a distrubting driver that always sits in the middle\nlane, and never moves. The simulation models roads and \nintersections, and allows for a variety of interconnections \nbetween them.  My input handling still needs to be migrated \nfrom my old implementation, but allows for the placement\nof all modeled components."
         },
-        procgen: {
-            name: "procgen",
-            type: "exe",
-            tag: " [[;#BAE4F0;]procgen] - Procedural Generation of terrain.",
-            about: "This was my first project using the Phaser game library.  It\nwas made as a way to explore the topic of procedural\ngeneration. A simple isometric level is generated using a \ncombination of noise, hand tuned methods, and good old \nrandomness.  The Phaser library made it easy to add some\nvisually pleaseing tweens. A copy of the source can be\nfound on my github."
-        },
+        // procgen: {
+        //     name: "procgen",
+        //     type: "exe",
+        //     tag: " [[;#BAE4F0;]procgen] - Procedural Generation of terrain.",
+        //     about: "This was my first project using the Phaser game library.  It\nwas made as a way to explore the topic of procedural\ngeneration. A simple isometric level is generated using a \ncombination of noise, hand tuned methods, and good old \nrandomness.  The Phaser library made it easy to add some\nvisually pleaseing tweens. A copy of the source can be\nfound on my github."
+        // },
         tribes: {
             name: "tribes",
             type: "exe",
             tag: " [[;#BAE4F0;]tribes]  - Tribe Simulation",
             about: "Tribes was one of my first javascript projects.  :)\nIt's a crude model of how 'tribes' or groups might form in\na collection of units tracking 'strength' values.  Each \nturn, a unit can 'fight' a unit near it, where the winner\nof the fight spreads its tribe.  If any unit ever notices\nthat it is surrounded only by weaker members of its current\ntribe, it revolts and starts its own tribe.  Suprisngly \ncomplex behaviour emerges from these simple rules."
-        },
-        unitgp: {
-            name: "unitgp",
-            type: "exe",
-            tag: " [[;#BAE4F0;]unitgp]  - Genetic Programming of Insect Behavior",
-            about: "Look back later for more!  This is my current project.  I am\nworking on using genetic programming to 'evolve' programatic \nrepresentations of behaviour."
         }
+        // unitgp: {
+        //     name: "unitgp",
+        //     type: "exe",
+        //     tag: " [[;#BAE4F0;]unitgp]  - Genetic Programming of Insect Behavior",
+        //     about: "Look back later for more!  This is my current project.  I am\nworking on using genetic programming to 'evolve' programatic \nrepresentations of behaviour."
+        // }
     }
 };
 
