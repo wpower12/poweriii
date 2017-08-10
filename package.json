@@ -14,7 +14,8 @@
   "devDependencies": {
     "css-loader": "^0.28.4",
     "style-loader": "^0.18.2",
-    "webpack": "^3.4.1"
+    "webpack": "^3.4.1",
+    "ws": "^3.1.0"
   },
   "dependencies": {
     "jQuery": "^1.7.4",
