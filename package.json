@@ -17,8 +17,7 @@
     "webpack": "^3.4.1"
   },
   "dependencies": {
-    "lodash": "^4.17.4",
-    "jQuery": "^3.0.0",
+    "jQuery": "^1.7.4",
     "jquery.terminal": "^1.5.2"
   }
 }
