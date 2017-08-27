@@ -2,10 +2,12 @@
   "name": "poweriii",
   "version": "1.0.0",
   "description": "Personal Site of William Power.",
+  "repository": "https://github.com/wpower12/poweriii",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack",
+    "build": "webpack && cleancss -o dist/style/style.min.css src/style.css",
+    "blog" : "onessg && cleancss -o dist/style/blog.min.css src/blog.css",
     "serve": "cd dist && ../node_modules/.bin/ws"
   },
   "keywords": [],
@@ -13,9 +15,11 @@
   "license": "ISC",
   "devDependencies": {
     "css-loader": "^0.28.4",
+    "jstransformer-ejs": "0.0.3",
+    "local-web-server": "^2.2.3",
+    "onessg": "^2.0.0",
     "style-loader": "^0.18.2",
-    "webpack": "^3.4.1",
-    "local-web-server":"^2.2.3"
+    "webpack": "^3.4.1"
   },
   "dependencies": {
     "jQuery": "^1.7.4",

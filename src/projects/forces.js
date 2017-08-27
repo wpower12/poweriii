@@ -1,4 +1,4 @@
-import '../style.css';
+// import '../style.css';
 
 var $ = jQuery;
 var QUAD = {}; // global var for the quadtree

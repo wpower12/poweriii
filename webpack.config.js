@@ -5,7 +5,8 @@ module.exports = {
     index:   './src/terminal.js',
     forces:  './src/projects/forces.js',
     traffic: './src/projects/traffic.js',
-    tribes:  './src/projects/tribes.js'
+    tribes:  './src/projects/tribes.js',
+    blog: './src/blog.js'
   },
   output: {
     filename: '[name]_bundle.js',

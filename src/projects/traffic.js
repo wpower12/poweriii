@@ -1,4 +1,4 @@
-import '../style.css';
+// import '../style.css';
 import Simulation from './traffic/simulation.js';
 import Road from './traffic/road.js';
 import Intersection from './traffic/intersection.js';

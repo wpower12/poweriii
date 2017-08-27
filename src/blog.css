@@ -1,0 +1,87 @@
+div {
+    display: block;
+}
+
+body {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    background: #333;
+}
+
+canvas {
+    outline: none;
+    display: inline-block;
+    vertical-align: baseline;
+}
+
+ol, ul {
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+img {
+    display: block;
+    margin: auto;
+}
+
+.terminal, .cmd, .terminal .terminal-output div div, .cmd .prompt {
+    font-size: 14px;
+    line-height: 18px;
+}
+
+.cmd, .terminal{
+    font-family: Consolas,monaco,monospace;
+    color: #aea79f;
+    background-color: #2c001e;
+    font-size: 14px;
+    line-height: 18px;
+}
+
+.container {
+    margin-right: auto;
+    margin-left: auto;
+    width: 600px;
+}
+
+.post {
+    width: 800px;
+}
+
+.bar {
+    background-color: #2c001e;
+    padding-bottom: 10px;
+}
+
+.bar, .bar ul {
+    text-align: center;
+}
+
+.bar ul {
+    list-style: none;
+    padding: 15px;
+}
+
+.bar li {
+    display: inline-block;
+}
+
+.textcontrols {
+    margin-top: 5px;
+}
+
+*, :after, :before {
+    box-sizing: border-box;
+}
+
+.post-wrapper, .title-block {
+    padding-left: 20px;
+    padding-right: 20px;
+    font-size: 18px;
+    line-height: 22px;
+}
+
+.title-block {
+    padding-top: 10px;
+}
+
+

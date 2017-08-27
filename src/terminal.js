@@ -1,17 +1,20 @@
-import './style.css';
-
 var directory = {
     home: {
         about: {
             name: "about.txt",
             type: "file",
             tag: " [[;#BAE4F0;]about.txt] - A bit about me.",
-            body: "[[b;#BAE4F0;]Background:] \n In a past life I was a mechanical engineer. Automating \nthings in AutoCAD made me fall in love with solving problems\n through code. After teaching myself some basics and gaining\nsome freelance web development clients, I decided to go back\nto school.  I am currently pursuing a masters degree in \ncomputer science from Temple University, with a focus\non Machine Learning, and general Software Engineering.\n[[b;#BAE4F0;]Skills:] \n    I have experience with a bunch of languages, but feel\nmost comfortable in Java and PHP.  For a full break down, \nyou can obtain a copy of my cv with the '[[;#BAE4F0;]cv]' command or use\nthe '[[;#BAE4F0;]github]', '[[;#BAE4F0;]linkedin]' commands to view my profiles.\n[[b;#BAE4F0;]Interests:] \n  In my free time I enjoy completing software, hardware, or \nother-ware projects.  I also like to juggle, bake, and play \nwith my cats.\n"
+            body: "[[b;#BAE4F0;]Background:] \n In a past life I was a mechanical engineer. Automating \nthings in AutoCAD made me fall in love with solving problems\n through code. After teaching myself some basics and gaining\nsome freelance web development clients, I decided to go back\nto school.  I am currently pursuing a Phd degree in \nAI and ML from Temple University.\n[[b;#BAE4F0;]Skills:] \n    I have experience with a bunch of languages, but feel\nmost comfortable in Java and PHP.  For a full break down, \nyou can obtain a copy of my cv with the '[[;#BAE4F0;]cv]' command or use\nthe '[[;#BAE4F0;]github]', '[[;#BAE4F0;]linkedin]' commands to view my profiles.\n[[b;#BAE4F0;]Interests:] \n  In my free time I enjoy completing software, hardware, or \nother-ware projects.  I also like to juggle, bake, and play \nwith my cats.\n"
         },
         projects: {
             name: "projects",
             type: "dir",
             tag: " [[b;#44D544;]projects]  - Personal Projects"
+        },
+        blog: {
+            name: "blog",
+            type: "dir",
+            tag: " [[b;#44D544;]blog]  - Things I Wrote"
         }
     },
     projects: {
@@ -58,7 +61,7 @@ jQuery(function($, undefined) {
                 var i = command.split(" ");
                 switch( i[0] ){
                     case "about": 
-                        commandAbout(term, command);
+                        commandAbout(term, command, directory);
                         break;
                     case "help":
                         commandHelp(term);
@@ -67,13 +70,13 @@ jQuery(function($, undefined) {
                         if( i.length > 1 && i[1] == "blog" ){
                             commandGoTo("/blog.html")
                         }
-                        commandCD(term, command);
+                        commandCD(term, command, directory);
                         break;
                     case "ls":
-                        commandLS(term);
+                        commandLS(term, directory);
                         break;
                     case "read":
-                        commandRead(term, command);
+                        commandRead(term, command, directory);
                         break;
                     case "cv":
                         commandGoTo("http://poweriii.com/resume.php");
@@ -122,7 +125,7 @@ jQuery(function($, undefined) {
     });
 });
 
-function commandAbout(t, e) {
+function commandAbout(t, e, directory) {
     var i, n = e.split(" ")[1], r = !1;
     for (var s in directory[curr_dir]) "exe" == directory[curr_dir][s].type && directory[curr_dir][s].name == n && (r = !0, i = directory[curr_dir][s]);
     r ? t.echo(i.about) : t.echo("exe not found")
@@ -141,19 +144,19 @@ function commandHelp(t) {
     t.echo("   [[;#BAE4F0;]linkedin] - Linkedin Profile")
 }
     
-function commandCD(t, e) {
+function commandCD(t, e, directory) {
     var i = e.split(" ")[1], n = !1;
     for (var r in directory[curr_dir]) "dir" == directory[curr_dir][r].type && directory[curr_dir][r].name == i && (n = !0);
     n && (prev_dir = curr_dir, curr_dir = i, t.set_prompt("[[;#fff;]poweriii] [[b;#4C4CA6;]::] [[;#fff;]~/" + curr_dir + "] [[b;#4C4CA6;]% ] "), console.log("Changed Directory to: " + i)), ".." == i && "home" != curr_dir && (curr_dir = prev_dir, "home" == curr_dir ? t.set_prompt("[[;#fff;]poweriii] [[b;#4C4CA6;]::] [[;#fff;]~ ] [[b;#4C4CA6;]% ] ") : t.set_prompt("[[;#fff;]poweriii] [[b;#4C4CA6;]::] [[;#fff;]~/" + curr_dir + "] [[b;#4C4CA6;]% ] "))
 }
 
-function commandLS(t) {
+function commandLS(t, directory) {
     for(var e in directory[curr_dir]){
         t.echo(directory[curr_dir][e].tag);
     }
 }
 
-function commandRead(t, e) {
+function commandRead(t, e, directory) {
     var i, n = e.split(" ")[1], r = !1;
     for (var s in directory[curr_dir]) "file" == directory[curr_dir][s].type && directory[curr_dir][s].name == n && (r = !0, i = directory[curr_dir][s]);
     r ? t.echo(i.body) : t.echo("file not found");

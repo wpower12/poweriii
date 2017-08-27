@@ -1,4 +1,4 @@
-import '../style.css';
+// import '../style.css';
 var $ = jQuery;
 
 class Unit {
