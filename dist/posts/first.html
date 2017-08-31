@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Websites and Blogs and Cats Oh My!</title>
+    <meta name="author" content="wpower">
+    <link href="../style/blog.min.css" rel="stylesheet"/>
+  </head>
+  <body>
+  	<div class="container post">
+  		<div class="terminal">
+	  		<div class="title-block">
+	  			<h1>Websites and Blogs and Cats Oh My!</h1>
+	  			<h3>9/27/19</h3>
+	  		</div>
+			<div class="post-wrapper">
+				<p>Hi.  </p>
+<p>My name is Bill.  I&#39;m a grad student pursuing a PhD in CS on an AI and ML track.  That means I get to read a bunch, and occasionally make some cool models of interesting data.  </p>
+<p>I wanted to keep track of the things I&#39;ve read and made while working towards my degree, and this blog (hopefully) will fill that role.  </p>
+<p>In this first post I thought I&#39;d just talk about the design of this website, and some of the past (not AI/ML) projects I&#39;ve hosted on it.  </p>
+<h3 id="this-site">This site</h3>
+<p>Fist up, this site.  The source code can be found <a href="">here</a>.  Feel free to clone and play with it.  </p>
+<p>The site itself is hosted on a VPS with apache running.  Some of the background scripts (serving files) are handled in PHP, but the basically all of the content is static.  There is an .htaccess file that implements some simple quality of life features like URL redirects.  </p>
+<p>The index, blog, and project pages make heavy use of javascript, so some organization was required.  I used npm locally to leverage the commnuities build tools.  Webpack is used to build the complex apps out of their consitiuent files.  Each app has a specific webpack recipie that targets a &#39;main&#39; script, and outputs a bundle that is used by the projects specific page.  Additionally, cleancss is used to minify the css files for each portion of the site.  </p>
+<p>The index and blog pages are built around the jquery.terminal library.  This is a great terminal emulator that turns a div into an interactive terminal prompt.  The library exposes a very simple API for adding your own commands, and tweaking the look and feel of the terminal and its prompt.  </p>
+<p>To mimic a directory/filesystem, a global javascript object is maintained.  Each top level entry indicates a possible directory.  In these are other entries that represent either &#39;files&#39; (really just links to javascript applications that are &#39;executed&#39;) or directories (really just references to other top level entries).  This allows for a rough, but nestable fake filesystem.  The script also tracks a current and previous directory to manage changing directories.  </p>
+<p>The blog is implemented with a barebones static site generator.  Posts are written in markdown, then the onessg tool is used to create an html file via a template.  The post page is also a jquery.terminal and tracks a list of posts in a javascript object.  Right now this is manually added to, but I&#39;d like to eventually automate that.  This object is used by terminal methods to generate the post listing, and to also provide the address to each post for the read command.  </p>
+<h3 id="the-apps">The Apps</h3>
+<h4 id="forces">Forces</h4>
+<p>My first thing!  </p>
+			</div>
+			<div class="bar">
+		        <ul>
+		          <li id="home">[h]ome</li><li>&nbsp;||&nbsp;</li><li id="blog">[b]log</li>
+		        </ul>
+	  		</div>
+		</div>
+  	</div>
+  </body>
+</html>
+  			

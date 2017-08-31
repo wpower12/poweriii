@@ -7,7 +7,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack && cleancss -o dist/style/style.min.css src/style.css",
-    "blog" : "onessg && cleancss -o dist/style/blog.min.css src/blog.css",
+    "blog" : "onessg -s src/blog/ -d dist/posts/ && cleancss -o dist/style/blog.min.css src/blog.css",
     "serve": "cd dist && ../node_modules/.bin/ws"
   },
   "keywords": [],

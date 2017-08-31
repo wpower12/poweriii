@@ -1,9 +1,9 @@
 var posts = [
 	{
-		title: "First!",
+		title: "Websites and Blogs and Cats Oh My!",
 		slug: "",
-		ref: "test.html",
-		date: ""
+		ref: "first.html",
+		date: "9/27/19"
 	}
 ];
 
@@ -15,7 +15,7 @@ jQuery(function($, undefined) {
                 switch( i[0] ){
                 	case "cd":
                         if( i.length > 1 && i[1] == ".." ){
-                            commandGoTo("/index.html")
+                            commandGoTo("/")
                         }
                 		break;
                 	case "help":
@@ -43,29 +43,28 @@ jQuery(function($, undefined) {
            this.echo('');
         }
     }, {
-        greetings: build_greeting( posts ),
+        greetings: null,
+        onInit: function( term ){ build_greeting(term, posts); },
         name: 'blog',
         height: 400,
         prompt: "[[;#fff;]poweriii] [[b;#4C4CA6;]::] [[;#fff;]~/blog] [[b;#4C4CA6;]% ] "
     });
 });
 
-function build_greeting( list ) {
-	var ret = "";
+function build_greeting( term, list ) {
 	var counter = 0;
 	console.log(list);
 	for ( var item in list ){
-		ret += "[ [[b;#44D544;]"+counter+"] ] - " +  list[item].title + "\n";
+        term.echo("["+counter+"] - "+"<a href=\"blog/"+list[item].ref+"\">"+list[item].title+"</a>", {raw: true});
 		counter++;
 	}
-	return ret;
 }
 
 
 
 function commandRead(term, list, n){
 	if( n < list.length ){
-		var t = "blog/";
+		var t = "";
 			t += list[n].ref;
     	commandGoTo(t);
 	} else {
@@ -82,7 +81,7 @@ function commandHelp(t) {
 }
 
 function commandLS(t){
-	t.echo( build_greeting(posts) );
+    build_greeting(t, posts);
 }
 
 function commandGoTo(t){

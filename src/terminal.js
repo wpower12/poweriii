@@ -67,8 +67,8 @@ jQuery(function($, undefined) {
                         commandHelp(term);
                         break;
                     case "cd":
-                        if( i.length > 1 && i[1] == "blog" ){
-                            commandGoTo("/blog.html")
+                        if( i.length > 1 && i[1] == "blog" && curr_dir == "home"){
+                            commandGoTo("/blog/")
                         }
                         commandCD(term, command, directory);
                         break;
@@ -83,6 +83,9 @@ jQuery(function($, undefined) {
                         break;
                     case "github":
                         commandGoTo("https://github.com/wpower12");
+                        break;
+                    case "source":
+                        commandGoTo("https://github.com/wpower12/poweriii");
                         break;
                     case "linkedin":
                         commandGoTo("https://www.linkedin.com/in/wkp3engineer");
@@ -140,8 +143,9 @@ function commandHelp(t) {
     t.echo("[[;#BAE4F0;]read <FILE>] - Opens a file for reading.");
     t.echo("[[;#BAE4F0;]about <EXE>] - Displays some information about the application.");
     t.echo("         [[;#BAE4F0;]cv] - Download a PDF resume.");
-    t.echo("     [[;#BAE4F0;]github] - Github Profile");
-    t.echo("   [[;#BAE4F0;]linkedin] - Linkedin Profile")
+    t.echo("     [[;#BAE4F0;]github] - Go to Github profile");
+    t.echo("     [[;#BAE4F0;]source] - Go to source for this website");
+    t.echo("   [[;#BAE4F0;]linkedin] - Go to Linkedin profile")
 }
     
 function commandCD(t, e, directory) {

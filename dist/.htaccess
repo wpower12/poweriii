@@ -1,0 +1,6 @@
+Options +FollowSymLinks
+RewriteEngine On
+ 
+RewriteRule ^blog/(.+)$ ./posts/$1
+RewriteRule ^blog/ ./blog.html
+RewriteRule ^/ ./index.html
