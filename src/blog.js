@@ -55,7 +55,7 @@ function build_greeting( term, list ) {
 	var counter = 0;
 	console.log(list);
 	for ( var item in list ){
-        term.echo("["+counter+"] - "+"<a href=\"blog/"+list[item].ref+"\">"+list[item].title+"</a>", {raw: true});
+        term.echo("["+counter+"] - "+"<a href=\""+list[item].ref+"\">"+list[item].title+"</a>", {raw: true});
 		counter++;
 	}
 }
