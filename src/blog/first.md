@@ -30,8 +30,10 @@ The blog is implemented with a barebones static site generator.  Posts are writt
 
 If you `cd` to the projects directory, you'll see some of the javascript applications I've made.  These are all simple and usually are just a way to test out a single concept from myself or my studies.  To run any of them, just type in the name and hit enter.  here's a brief overview of `forces`, `traffic`, and `tribes`.
 
-### Forces 
-<img src="../img/ex_forces.gif" style="">
+### Forces
+<a href="/projects/forces.html">
+	<img src="../img/ex_forces.gif" style="">
+</a>
 
 My first thing!  One of the earliest things I made in javascript.  I had been reading about space partitioning algorithms and datastructures and wanted an excuse to use a quad tree.  All the moving discs in the simulation are stored in a quad tree.  This lets me save a lot of comparisions when resolving collisions.  You can see stats by hitting the s (i think, go with what the page says) button.  The collisions are all conservation conserving with the radius of a disc standing in for its mass.  
 
@@ -40,12 +42,16 @@ The circle patterns are supposed to represent gravity wells.  These didn't turn 
 As for the interaction between these wells and the discs: really bad approximation of gravity.  You can see the total energy in the system in the stats, you'll notice that this does not stay constant as discs interact with the wells.  This is partly due to a use of an inverse linear relationship in lieu of the actual inverse square.  Also, the discs only interact with one well at a time.  
 
 ### Traffic
-<img src="../img/ex_traffic.gif" style="">
+<a href="/projects/traffic.html">
+	<img src="../img/ex_traffic.gif" style="">
+</a>
 
 A grid based traffic simulator.  Cars exist on grids representing roads and intersections.  The cars are driven by three different class of driver.  This type effects which lane they prefer to stay in, and how and when they will pass other cars.  There are controls for adding roads and intersections, and connecting these up to build road networks.  
 
 ### Tribes
-<img src="../img/ex_tribes.gif" style="">
+<a href="/projects/tribes.html">
+	<img src="../img/ex_tribes.gif" style="">
+</a>
 
 Tribes is an agent simulation on a grid.  The grid serves as an environment for units that move along it.  Each unit starts with a random color and power value.  Each update tick the agents randomly move to an empty adjacent square, and then look for a fight.  A random adjacent square is selected, and if there is a unit there with a different color value, they compare their powers.  The unit with a lower value copies the color of the winner.  Also, if a unit is ever surrounded by units only of its same color, and its power is larger than all thsoe around it, that unit 'revolts' and set its color to its original value.  
 
