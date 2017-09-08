@@ -5,6 +5,7 @@
     <title>Websites and Blogs and Cats Oh My!</title>
     <meta name="author" content="wpower">
     <link href="../style/blog.min.css" rel="stylesheet"/>
+    <script src="../js/post_bundle.js"></script>
   </head>
   <body>
   	<div class="container post">
@@ -19,7 +20,7 @@
 <p>I wanted to keep track of the things I&#39;ve read and made while working towards my degree, and this blog (hopefully) will fill that role.  </p>
 <p>In this first post I thought I&#39;d just talk about the design of this website, and some of the past (not AI/ML) projects I&#39;ve hosted on it.  </p>
 <h2 id="this-site">This site</h2>
-<p>Fist up, this site.  The source code can be found <a href="">here</a>.  Feel free to clone and play with it.  </p>
+<p>First up, this site.  The source code can be found <a href="https://github.com/wpower12/poweriii">here</a>.  Feel free to clone and play with it.  </p>
 <p>The site itself is hosted on a VPS with apache running.  Some of the background scripts (serving files) are handled in PHP, but the basically all of the content is static.  There is an .htaccess file that implements some simple quality of life features like URL redirects.  </p>
 <p>The index, blog, and project pages make heavy use of javascript, so some organization was required.  I used npm locally to leverage the commnuities build tools.  Webpack is used to build the complex apps out of their consitiuent files.  Each app has a specific webpack recipie that targets a &#39;main&#39; script, and outputs a bundle that is used by the projects specific page.  Additionally, cleancss is used to minify the css files for each portion of the site.  </p>
 <p>The index and blog pages are built around the jquery.terminal library.  This is a great terminal emulator that turns a div into an interactive terminal prompt.  The library exposes a very simple API for adding your own commands, and tweaking the look and feel of the terminal and its prompt.  </p>
@@ -28,16 +29,20 @@ The blog is implemented with a barebones static site generator.  Posts are writt
 <h2 id="the-apps">The Apps</h2>
 <p>If you <code>cd</code> to the projects directory, you&#39;ll see some of the javascript applications I&#39;ve made.  These are all simple and usually are just a way to test out a single concept from myself or my studies.  To run any of them, just type in the name and hit enter.  here&#39;s a brief overview of <code>forces</code>, <code>traffic</code>, and <code>tribes</code>.</p>
 <h3 id="forces">Forces</h3>
+<p><img src="../img/ex_forces.gif" style=""></p>
 <p>My first thing!  One of the earliest things I made in javascript.  I had been reading about space partitioning algorithms and datastructures and wanted an excuse to use a quad tree.  All the moving discs in the simulation are stored in a quad tree.  This lets me save a lot of comparisions when resolving collisions.  You can see stats by hitting the s (i think, go with what the page says) button.  The collisions are all conservation conserving with the radius of a disc standing in for its mass.  </p>
 <p>The circle patterns are supposed to represent gravity wells.  These didn&#39;t turn out exactly as I envisioned.  The way they are drawn is hacky.  The original idea was to draw concentric circles, with a gradient of colors and decreasing radius.  I had hoped it would give an illusion of the space there deforming into a well.  What is there works well enough. </p>
 <p>As for the interaction between these wells and the discs: really bad approximation of gravity.  You can see the total energy in the system in the stats, you&#39;ll notice that this does not stay constant as discs interact with the wells.  This is partly due to a use of an inverse linear relationship in lieu of the actual inverse square.  Also, the discs only interact with one well at a time.  </p>
 <h3 id="traffic">Traffic</h3>
+<p><img src="../img/ex_traffic.gif" style=""></p>
 <p>A grid based traffic simulator.  Cars exist on grids representing roads and intersections.  The cars are driven by three different class of driver.  This type effects which lane they prefer to stay in, and how and when they will pass other cars.  There are controls for adding roads and intersections, and connecting these up to build road networks.  </p>
 <h3 id="tribes">Tribes</h3>
+<p><img src="../img/ex_tribes.gif" style=""></p>
 <p>Tribes is an agent simulation on a grid.  The grid serves as an environment for units that move along it.  Each unit starts with a random color and power value.  Each update tick the agents randomly move to an empty adjacent square, and then look for a fight.  A random adjacent square is selected, and if there is a unit there with a different color value, they compare their powers.  The unit with a lower value copies the color of the winner.  Also, if a unit is ever surrounded by units only of its same color, and its power is larger than all thsoe around it, that unit &#39;revolts&#39; and set its color to its original value.  </p>
 <p>These simple rules give rise to some cool behaviour.  These behaviour also depend on parameters of the simulation.  Controls on the page allow you to change the FPS, the size of the sim, and the fill percentage.  </p>
 <h2 id="cya-">Cya!</h2>
-<p>I hope you enjoy looking at my stuff!  If you&#39;d like to give me any tips, critques, or anything send me an email! <code>willpowe@gmail.com</code> You can also reach me through my accounts, you can find all of them on the main site.  </p>
+<p>I hope you enjoy looking at my stuff!  If you&#39;d like to give me any tips, critques, or anything send me an email! <code>willpowe@gmail.com</code> You can also reach me through my accounts, you can find all of them on the main site.  Check out the help command to see everything available.  Since this is the internet, here&#39;s a picture of my cat as a kitten.</p>
+<p><img src="../img/mycat.png" style=""></p>
 			</div>
 			<div class="bar">
 		        <ul>
