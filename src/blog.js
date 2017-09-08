@@ -3,7 +3,7 @@ var posts = [
 		title: "Websites and Blogs and Cats Oh My!",
 		slug: "",
 		ref: "first.html",
-		date: "9/27/19"
+		date: "9/7/17"
 	}
 ];
 
