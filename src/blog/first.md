@@ -14,9 +14,9 @@ In this first post I thought I'd just talk about the design of this website, and
 
 ## This site
 
-First up, this site.  The source code can be found <a href="https://github.com/wpower12/poweriii">here</a>.  Feel free to clone and play with it.  
+First up, this site.  The source code can be found <a href="https://github.com/wpower12/poweriii">here</a>.  
 
-The site itself is hosted on a VPS with apache running.  Some of the background scripts (serving files) are handled in PHP, but the basically all of the content is static.  There is an .htaccess file that implements some simple quality of life features like URL redirects.  
+The site itself is hosted on a VPS with apache running.  Some of the background scripts (serving files) are handled in PHP, but basically all of the content is static. 
 
 The index, blog, and project pages make heavy use of javascript, so some organization was required.  I used npm locally to leverage the commnuities build tools.  Webpack is used to build the complex apps out of their consitiuent files.  Each app has a specific webpack recipie that targets a 'main' script, and outputs a bundle that is used by the projects specific page.  Additionally, cleancss is used to minify the css files for each portion of the site.  
 
@@ -35,7 +35,7 @@ If you `cd` to the projects directory, you'll see some of the javascript applica
 	<img src="../img/ex_forces.gif" style="">
 </a>
 
-My first thing!  One of the earliest things I made in javascript.  I had been reading about space partitioning algorithms and datastructures and wanted an excuse to use a quad tree.  All the moving discs in the simulation are stored in a quad tree.  This lets me save a lot of comparisions when resolving collisions.  You can see stats by hitting the s (i think, go with what the page says) button.  The collisions are all conservation conserving with the radius of a disc standing in for its mass.  
+My first thing!  One of the earliest javascript projects.  I had been reading about space partitioning algorithms and datastructures and wanted an excuse to use a quad tree.  All the moving discs in the simulation are stored in one.  This lets me save a lot of comparisions when resolving collisions.  If you hit s youll see a comparison of the number of collisions with the tree and with naieve O(n^2) comparison.  The collisions are all conservation conserving with the radius of a disc standing in for its mass.  
 
 The circle patterns are supposed to represent gravity wells.  These didn't turn out exactly as I envisioned.  The way they are drawn is hacky.  The original idea was to draw concentric circles, with a gradient of colors and decreasing radius.  I had hoped it would give an illusion of the space there deforming into a well.  What is there works well enough. 
 
