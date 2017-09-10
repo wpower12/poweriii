@@ -23,7 +23,8 @@ The index, blog, and project pages make heavy use of javascript, so some organiz
 The index and blog pages are built around the jquery.terminal library.  This is a great terminal emulator that turns a div into an interactive terminal prompt.  The library exposes a very simple API for adding your own commands, and tweaking the look and feel of the terminal and its prompt.  
 
 To mimic a directory/filesystem, a global javascript object is maintained.  Each top level entry indicates a possible directory.  In these are other entries that represent either 'files' (really just links to javascript applications that are 'executed') or directories (really just references to other top level entries).  This allows for a rough, but nestable fake filesystem.  The script also tracks a current and previous directory to manage changing directories.  
-q
+
+
 The blog is implemented with a barebones static site generator.  Posts are written in markdown, then the onessg tool is used to create an html file via a template.  The post page is also a jquery.terminal and tracks a list of posts in a javascript object.  Right now this is manually added to, but I'd like to eventually automate that.  This object is used by terminal methods to generate the post listing, and to also provide the address to each post for the read command.  
 
 ## The Apps

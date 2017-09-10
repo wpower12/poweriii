@@ -24,7 +24,7 @@ ol, ul {
     line-height: 18px;
 }
 
-.cmd, .terminal, .forceterminal {
+.cmd, .terminal, .forceterminal, .antterminal {
     font-family: Consolas,monaco,monospace;
     color: #aea79f;
     background-color: #2c001e;
@@ -32,7 +32,7 @@ ol, ul {
     line-height: 18px;
 }
 
-.forceterminal {
+.forceterminal, .antterminal {
     padding: 10px;
     overflow: auto;
     position: relative;

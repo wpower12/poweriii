@@ -24,8 +24,8 @@
 <p>The site itself is hosted on a VPS with apache running.  Some of the background scripts (serving files) are handled in PHP, but basically all of the content is static. </p>
 <p>The index, blog, and project pages make heavy use of javascript, so some organization was required.  I used npm locally to leverage the commnuities build tools.  Webpack is used to build the complex apps out of their consitiuent files.  Each app has a specific webpack recipie that targets a &#39;main&#39; script, and outputs a bundle that is used by the projects specific page.  Additionally, cleancss is used to minify the css files for each portion of the site.  </p>
 <p>The index and blog pages are built around the jquery.terminal library.  This is a great terminal emulator that turns a div into an interactive terminal prompt.  The library exposes a very simple API for adding your own commands, and tweaking the look and feel of the terminal and its prompt.  </p>
-<p>To mimic a directory/filesystem, a global javascript object is maintained.  Each top level entry indicates a possible directory.  In these are other entries that represent either &#39;files&#39; (really just links to javascript applications that are &#39;executed&#39;) or directories (really just references to other top level entries).  This allows for a rough, but nestable fake filesystem.  The script also tracks a current and previous directory to manage changing directories.<br>q
-The blog is implemented with a barebones static site generator.  Posts are written in markdown, then the onessg tool is used to create an html file via a template.  The post page is also a jquery.terminal and tracks a list of posts in a javascript object.  Right now this is manually added to, but I&#39;d like to eventually automate that.  This object is used by terminal methods to generate the post listing, and to also provide the address to each post for the read command.  </p>
+<p>To mimic a directory/filesystem, a global javascript object is maintained.  Each top level entry indicates a possible directory.  In these are other entries that represent either &#39;files&#39; (really just links to javascript applications that are &#39;executed&#39;) or directories (really just references to other top level entries).  This allows for a rough, but nestable fake filesystem.  The script also tracks a current and previous directory to manage changing directories.  </p>
+<p>The blog is implemented with a barebones static site generator.  Posts are written in markdown, then the onessg tool is used to create an html file via a template.  The post page is also a jquery.terminal and tracks a list of posts in a javascript object.  Right now this is manually added to, but I&#39;d like to eventually automate that.  This object is used by terminal methods to generate the post listing, and to also provide the address to each post for the read command.  </p>
 <h2 id="the-apps">The Apps</h2>
 <p>If you <code>cd</code> to the projects directory, you&#39;ll see some of the javascript applications I&#39;ve made.  These are all simple and usually are just a way to test out a single concept from myself or my studies.  To run any of them, just type in the name and hit enter.  here&#39;s a brief overview of <code>forces</code>, <code>traffic</code>, and <code>tribes</code>.</p>
 <h3 id="forces">Forces</h3>
@@ -52,7 +52,9 @@ The blog is implemented with a barebones static site generator.  Posts are writt
 			</div>
 			<div class="bar">
 		        <ul>
-		          <li id="home">[h]ome</li><li>&nbsp;||&nbsp;</li><li id="blog">[b]log</li>
+		          <li id="home" onclick="window.location.href='/';">[h]ome</li>
+		          <li>&nbsp;||&nbsp;</li>
+		          <li id="blog" onclick="window.location.href='/blog/';">[b]log</li>
 		        </ul>
 	  		</div>
 		</div>

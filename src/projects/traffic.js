@@ -68,5 +68,4 @@ sim.connectRtoI(4, 3, 0);
 sim.connectItoR(3, 6, 3);
 sim.connectItoR(3, 0, 0);
 
-
 sim.run();
