@@ -2,7 +2,6 @@
  * Base Class for the types of simulations run.  Allows the reuse of the draw
  * method.  
 **/
-
 class Simulation {
 	constructor(){
 		this.size = { x: 20, y: 15 };	// Dimensions of Board
@@ -10,6 +9,9 @@ class Simulation {
 		this.loc  = { x: 10, y: 10};	// Location of Bug
 		this.FOOD_FILL = 0.25;			// Amount of food (in % of cells)
 		this.food = build_food_array(this.size, this.FOOD_FILL); // Food Array
+		this.health = 15;
+		this.ticks_alive = 0;
+		this.food_collected = 0;
 	}
 
 	draw( cnv, food, bug, scale ){
@@ -67,6 +69,13 @@ class Simulation {
 				 0.5+(1-2*0.25)*scale);
 		ctx.fillStyle = "black";
 		ctx.fill();
+	}
+
+	reset(){
+		this.food = build_food_array(this.size, this.FOOD_FILL);
+		this.health = 15;
+		this.ticks_alive = 0;
+		this.food_collected = 0;
 	}
 }
 

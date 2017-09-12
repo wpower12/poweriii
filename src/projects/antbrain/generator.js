@@ -19,10 +19,11 @@ class Generator {
 	}
 
 	get_random_internal(){
-		throw {name : "NotImplementedError", message : "too lazy to implement"}; 
+		throw {name : "NotImplementedError", message : "implement in concrete class."}; 
 	}
 
 	get_random_terminal(){
-		throw {name : "NotImplementedError", message : "too lazy to implement"}; 
+		throw {name : "NotImplementedError", message : "implement in concrete class."}; 
 	}
 }
+export default Generator;

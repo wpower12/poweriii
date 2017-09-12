@@ -1,5 +1,8 @@
-import BasicSimulation from './antbrain/basic/basic_simulation.js';
+import Experiment from './antbrain/gp_experiment.js';
 
-var sim = new BasicSimulation();
+var exp = new Experiment();
 
-sim.simulate_canvas(0, document.getElementById('antcanvas'));
+exp.run();
+var cnv = document.getElementById('antcanvas');
+exp.simulate_best(cnv);
+
