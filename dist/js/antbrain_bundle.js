@@ -90,7 +90,7 @@ class BasicGenerator extends __WEBPACK_IMPORTED_MODULE_0__generator_js__["a" /* 
 
 	get_random_internal(){
 		var dir = getRandomInt(0, 8); // One of the 7 [0, 6] possible directions to look
-		if(dir < 8){
+		if(dir < 7){
 			return new __WEBPACK_IMPORTED_MODULE_1__nodes_internal_js__["a" /* IF_XX */](dir); 
 		} else {
 			return new __WEBPACK_IMPORTED_MODULE_1__nodes_internal_js__["b" /* RAND */]();

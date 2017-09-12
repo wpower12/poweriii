@@ -13,7 +13,7 @@ class BasicGenerator extends Generator {
 
 	get_random_internal(){
 		var dir = getRandomInt(0, 8); // One of the 7 [0, 6] possible directions to look
-		if(dir < 8){
+		if(dir < 7){
 			return new IF_XX(dir); 
 		} else {
 			return new RAND();
