@@ -1,0 +1,28 @@
+<html>
+<head>
+  <title>pocket algorithm</title>
+  <link rel="shortcut icon" href="../favicon.ico" />
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.terminal/1.5.2/js/jquery.terminal.min.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery.terminal/1.5.2/css/jquery.terminal.min.css" rel="stylesheet"/>
+  <link href="../style/style.min.css" rel="stylesheet"/>
+</head>
+<body>
+  <div class="container pocket-container">
+    <div class="antterminal pocketterminal">
+      <canvas id="canvas_3d" width="350" height="350" tabindex="0"></canvas>
+      <canvas id="canvas_2d" width="350" height="350" tabindex="0"></canvas>
+    </div>
+    <div>
+      This is an example of using a perceptron to seperate a dataset with a hyperplane.  The left side shows the 3D view of the data, where the bias variable has been added to each data point.  The arrow represents the vector of weights learned by a pocket algorithm.  Its normal can be seen slicing the data.  
+
+      I still have to finish drawing the intersection of the W-plane and the z=1 plane.  I'm having trouble getting the vectors from THREEjs and the linear algebra library to play nice.
+
+      The code can be found HERE
+
+      The 3D stuff is done with the <a href="https://threejs.org/">ThreeJS</a> library, and the math is handled by <a href="http://mathjs.org/">Mathjs</a>.
+    </div>
+  </div>
+  <script src="/js/pocket_bundle.js"></script>
+</body>
+</html>

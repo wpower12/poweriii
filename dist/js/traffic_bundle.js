@@ -60,694 +60,20 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 10);
+/******/ 	return __webpack_require__(__webpack_require__.s = 158);
 /******/ })
 /************************************************************************/
-/******/ ([
-/* 0 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/******/ ({
 
-"use strict";
-class Car {
-    constructor(id, cardata, type){
-		this.id = id;
-		this.loc = {lane: cardata.lane, pos: cardata.pos};
-		this.type = type;
-		this.speed = cardata.speed;
-		this.timer = 0;
-    }
-};
-/* harmony default export */ __webpack_exports__["a"] = (Car);
-
-
-/***/ }),
-/* 1 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-class ColorPicker {
-    constructor(n){
-    	this.s = 90;
-	    this.l = 40;
-	    this.delta = 360 / n;
-    }
-};
-$.extend(ColorPicker.prototype, {
-    //Returns the css color string used by canvas
-    get: function (c) {
-        var ret = 'hsl(' + c * this.delta + ',' + this.s + '%,' + this.l + '%' + ')';
-        return ret;
-    }
-});
-/* harmony default export */ __webpack_exports__["a"] = (ColorPicker);
-
-/***/ }),
-/* 2 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__car_js__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__colorpicker_js__ = __webpack_require__(1);
-
-
-
-class Road {
-    //Roads track their 0lane, 0pos, lanes, length, and orientation
-    //TODO - make orientation not shitty.  Either enum like driver, or use explicit
-    //     - names in an input object that describe the orientation 'vectors' of the
-    //     - lane and position directions ex: {lanex: 0, laney: -1, posx: 1, posy: 0} 
-    //     - orientation is a bunch of vectors that could probably be more simply
-    //     - expressed but w.e  it works right now. 
-    constructor(rdata, orientation, length, lanes){
-	    this.orientation = orientation;    // 0 iup (-y), 1 ileft(-x), 2 idown(+y), 3 iright(+x)
-	    this.o = {x: 0, y: 0, xd: 0, yd: 0, lx: -1, ly: 0, lanes: lanes};
-	    this.length = length;
-	    this.lanes = lanes;
-	    this.out = "none";   //Out is where cars are passed when they get to the end.
-	    this.outside = 0;
-	    this.outs = [];
-	    this.outs[0] = "none";
-
-	    this.colors = new __WEBPACK_IMPORTED_MODULE_1__colorpicker_js__["a" /* default */](7);
-
-	    this.start = {xn: rdata.x, yn: rdata.y, x: 0, y: 0};
-
-	    this.dim = {
-	        xn0: rdata.x,
-	        yn0: rdata.y,
-	        xd0: 0,
-	        yd0: 0,
-	        dx: 0,
-	        dy: 0};
-
-	    //Orientation and dimensions - makes drawing easier
-	    this.o = this.getO(this.orientation);
-	    this.dim.xd0 = this.dim.xn0 + this.o.xd;
-	    this.dim.yd0 = this.dim.yn0 + this.o.yd;
-	    this.dim.dx = this.o.lx * this.lanes + this.o.px * this.length;
-	    this.dim.dy = this.o.ly * this.lanes + this.o.py * this.length;
-
-	    this.cars = [];
-	    this.road = [];
-	    for (var i = 0; i < lanes; i++) {
-	        this.road[i] = [];
-	        for (var j = 0; j < length; j++) {
-	            this.road[i][j] = 0;
-	        }
-	    }
-	}
-	
-	draw(ctx, size) {
-        this.drawPavement(ctx, size);
-        this.drawCars(ctx, size);
-    }
-
-    update() {
-        //Update Cars
-        //If an update pushes a car to the intersection, it asks the
-        //intersection if it can proceed, if so, pass and then remove
-        var forward = 0, depass = 1, pass = 1, position = 0, car = 0;
-        for (var c = 0; c < this.cars.length; c++) {
-            car = this.cars[c];
-
-            if (car.timer++ > car.speed) {
-                car.timer = 0;
-                //If near end, do intersection shit
-                if (car.loc.pos === (this.length - 1) && this.out !== "none") {
-                    if (this.out.open(car.loc.lane, this.outside)) {
-                        this.out.addCar(new __WEBPACK_IMPORTED_MODULE_0__car_js__["a" /* default */](car.id, {lane: car.loc.lane, pos: 0, speed: car.speed}, car.type), this.outside);
-                        this.cars.splice(c, 1);
-                        this.road[car.loc.lane][car.loc.pos] = 0;
-                    }
-                } else {
-                    switch (car.type) {
-                        case 0:
-                            //If you can depass, depass.
-                            if (car.loc.lane > 0) {
-                                depass = this.road[car.loc.lane - 1][ car.loc.pos + 1 ];
-                                if (depass === 0) {
-                                    //TODO - Depass function outta scope
-                                    this.depass(car);
-                                    return;
-                                }
-                            }
-                            //If forward is clear go, else pass
-                            forward = this.road[car.loc.lane + 0][car.loc.pos + 1];
-                            if (forward === 0) {
-                                this.moveForward(car);
-                                return;
-                            } else {
-                                if (car.loc.lane < (this.lanes - 1)) {
-                                    pass = this.road[car.loc.lane + 1][ car.loc.pos + 1 ];
-                                    if (pass === 0) {
-                                        //TODO - Pass function outta scope
-                                        this.pass(car);
-                                        return;
-                                    }
-                                }
-                            }
-                            break;
-                        // case Driver().CRAZY:
-                        //     break;
-                        default:
-                            break;
-                    }
-                }
-            }
-        }
-    }
-
-    drawPavement(ctx, size) {
-        //Grey rectangle under the road
-        ctx.fillStyle = "lightgrey";
-        var x0 = (size.scale * (this.dim.xd0)) + size.x0;
-        var y0 = (size.scale * (this.dim.yd0)) + size.y0;
-        ctx.beginPath();
-        ctx.rect(x0,
-                y0,
-                size.scale * this.dim.dx,
-                size.scale * this.dim.dy);
-        ctx.fill();
-
-        //Outline the road
-        ctx.strokeStyle = "black";
-        ctx.lineWidth = 3;
-        ctx.beginPath();
-        ctx.moveTo(x0, y0);
-        ctx.lineTo(x0 + (size.scale * this.o.px * this.length), y0 + (size.scale * this.o.py * this.length));
-        ctx.stroke();
-        ctx.beginPath();
-        var xl = 0, yl = 0;
-        xl = x0 + (size.scale * this.o.lx * this.lanes);
-        yl = y0 + (size.scale * this.o.ly * this.lanes);
-        ctx.moveTo(xl, yl);
-        ctx.lineTo(xl + (size.scale * this.o.px * this.length), yl + (size.scale * this.o.py * this.length));
-        ctx.stroke();
-
-        //Draw lane lines
-        if (this.lanes > 1) {
-            ctx.strokeStyle = "darkgrey";
-            ctx.lineWidth = 3;
-            var xp = 0, yp = 0;
-            for (var l = 1; l < (this.lanes); l++) {
-                xl = x0 + (size.scale * this.o.lx * l);
-                yl = y0 + (size.scale * this.o.ly * l);
-                for (var p = 0; p < this.length; p += 2) {
-                    xp = xl + (size.scale * this.o.px * p);
-                    yp = yl + (size.scale * this.o.py * p);
-                    ctx.beginPath();
-                    ctx.moveTo(xp, yp);
-                    ctx.lineTo(xp + (size.scale * this.o.px), yp + (size.scale * this.o.py));
-                    ctx.stroke();
-                }
-            }
-        }
-    }
-
-    drawCars(ctx, size) {
-        var cloc = {x: 0, y: 0};
-        for (var c = 0; c < this.cars.length; c++) {
-            var car = this.cars[c];
-            cloc.x = size.scale * (this.dim.xd0 + (this.o.lx * car.loc.lane) + (this.o.px * car.loc.pos)) + size.x0;
-            cloc.y = size.scale * (this.dim.yd0 + (this.o.ly * car.loc.lane) + (this.o.py * car.loc.pos)) + size.y0;
-            ctx.beginPath();
-            ctx.fillStyle = this.colors.get(car.id);
-            ctx.fillRect(cloc.x + 2*(this.o.x),
-                    cloc.y+ 2*(this.o.y),
-                    (size.scale * (this.o.x) - 4*(this.o.x)),
-                    (size.scale * (this.o.y) - 4*(this.o.y)));
-        }
-    }
-
-    addCar(c) {
-        this.cars.push(c);
-        this.road[c.loc.lane][c.loc.pos] = c;
-    }
-
-    setOutput(r, s) {
-        this.out = r;
-        this.outs[0] = r;
-        this.outside = s;
-    }
-
-    depass(c) {
-        this.road[c.loc.lane][c.loc.pos] = 0;
-        c.loc.lane--;
-        c.loc.pos++;
-        this.road[c.loc.lane][c.loc.pos] = 1;
-    }
-
-    moveForward(c) {
-        this.road[c.loc.lane][c.loc.pos] = 0;
-        c.loc.pos++;
-        this.road[c.loc.lane][c.loc.pos] = 1;
-    }
-
-    pass(c) {
-        this.road[c.loc.lane][c.loc.pos] = 0;
-        c.loc.lane++;
-        c.loc.pos++;
-        this.road[c.loc.lane][c.loc.pos] = 1;
-    }
-
-    open(lane, s) {
-        return (this.road[lane][0] === 0);
-    }
-
-    add(c) {
-        this.cars.push(c);
-        var n = this.cars.length;
-        //this.cars[n - 1].loc = {lane: 0, pos: 0};
-        this.road[c.loc.lane][0] = c;
-    }
-
-    getFrom(size, scale, side) {
-        var xout, yout;
-        xout = (this.dim.xd0
-                + (this.length - 0.5) * this.o.px
-                + (this.lanes / 2) * this.o.lx) * scale
-                + size.x0;
-        yout = (this.dim.yd0
-                + (this.length - 0.5) * this.o.py
-                + (this.lanes / 2) * this.o.ly) * scale
-                + size.y0;
-        return {x: xout, y: yout};
-    }
-
-    getTo(size, scale, side) {
-        return {
-            x: (this.dim.xd0 + 0.5 * this.o.lx * this.lanes + this.o.px * (0.5)) * scale + size.x0,
-            y: (this.dim.yd0 + 0.5 * this.o.ly * this.lanes + this.o.py * (0.5)) * scale + size.y0
-        };
-    }
-
-    getO(o) {
-        switch (o) {
-            case 0:
-                return {x: -1, y: -1, xd: 1, yd: 1, lx: -1, ly: 0, px: 0, py: -1};
-                break;
-            case 1:
-                return {x: -1, y: 1, xd: 1, yd: 0, lx: 0, ly: 1, px: -1, py: 0};
-                break;
-            case 2:
-                return {x: 1, y: 1, xd: 0, yd: 0, lx: 1, ly: 0, px: 0, py: 1};
-                break;
-            case 3:
-                return {x: 1, y: -1, xd: 0, yd: 1, lx: 0, ly: -1, px: 1, py: 0};
-                break
-            default:
-
-        }
-    }
-};
-
-/* harmony default export */ __webpack_exports__["a"] = (Road);
-
-/***/ }),
-/* 3 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__car_js__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__colorpicker_js__ = __webpack_require__(1);
-
-
-
-class Intersection {
-    //Base point is the lower right corner on the grid, in grid units
-    constructor (basepoint, lanecount, type) {
-        this.base = {x: basepoint.x, y: basepoint.y};
-        this.lanes = lanecount;
-        this.type = type;
-        this.colors = new __WEBPACK_IMPORTED_MODULE_1__colorpicker_js__["a" /* default */](7);
-
-        //Sides basically are in's and out's, 4 of um
-        this.outs = [];     //Point to roads
-        for (var i = 0; i < 4; i++) {
-            this.outs[i] = "none";
-        }
-
-        //Fields needed for managing logic.
-        this.timer = 0;
-        this.threshold = 200;
-        this.currentside = 0;   //Side 'in', same orientation as roads
-        this.cycle = 0;
-        this.outside = 1;
-
-        this.cars = [];
-        this.road = [];//Square road this time.  the side is a road, same as before
-        //Bottom right is 0,0, 'left turn' goes towards 2n,2n corner
-        for (var i = 0; i < this.lanes * 2; i++) {
-            this.road[i] = [];
-            for (var j = 0; j < this.lanes * 2; j++) {
-                this.road[i][j] = 0;
-            }
-        }
-    }
-
-    update() {
-        var side = this.currentside;
-        var out = (this.currentside + this.cycle + 1) % 4;
-        console.log(this.cars);
-        //Only do stuff/allow cars in if there is an output that way.
-        if (this.outs[out] !== "none") {
-            for (var c = 0; c < this.cars.length; c++) {
-                var car = this.cars[c];
-                car.timer++;
-                if (car.timer > car.speed) {
-                    car.timer = 0;
-                    switch (this.cycle) {
-                        case 0:  //Right                            
-                            this.updateCarRight(car, c);
-                            break;
-                        case 1:  //Straight
-                            this.updateCarStraight(car, c);
-                            break;
-                        case 2:  //Left
-                            this.updateCarLeft(car, c);
-                            break;
-                        default:
-                            break;
-                    }
-                }
-            }
-        } else {
-            this.timer = this.threshold;
-        }
-
-        //Increment timer, and change stuff if necessary
-        this.timer++;
-        if ((this.timer > this.threshold) && (this.cars.length === 0)) {
-            this.cycle = Math.floor(Math.random() * 3);
-            this.currentside = (this.currentside + 1) % 4;
-            this.outside = (this.currentside + this.cycle + 1) % 4;
-            this.timer = 0;
-        }
-    }
-    draw (ctx, size) {
-        this.drawPavement(ctx, size);
-        this.drawCars(ctx, size);
-    }
-    drawPavement (ctx, size) {
-        //Grey square under the intersection
-        ctx.fillStyle = "lightgrey";
-        var x0 = (size.scale * (this.base.x + 1)) + size.x0;
-        var y0 = (size.scale * (this.base.y + 1)) + size.y0;
-        var d = -2 * size.scale * this.lanes;
-        ctx.beginPath();
-        ctx.rect(x0, y0, d, d);
-        ctx.fill();
-
-        ctx.strokeStyle = "darkgrey";
-        ctx.beginPath();
-        ctx.setLineDash([size.scale * this.lanes]);
-        ctx.lineWidth = 3;
-        ctx.rect(x0, y0, d, d);
-        ctx.stroke();
-        ctx.setLineDash([0]);
-    }
-    drawCars (ctx, size) {
-        //Need to draw cars based on road orientation.
-        var t = this.getDrawTransform(this.currentside);
-
-        //Transform array position to draw position
-        var cloc = {x: 0, y: 0};
-        for (var c = 0; c < this.cars.length; c++) {
-            var car = this.cars[c];
-            cloc.x = size.scale * ((this.base.x + t.dbasex * (2 * this.lanes - 1)) + t.lanex * car.loc.lane + t.posx * car.loc.pos) + size.x0;
-            cloc.y = size.scale * ((this.base.y + t.dbasey * (2 * this.lanes - 1)) + t.laney * car.loc.lane + t.posy * car.loc.pos) + size.y0;
-            ctx.beginPath();
-            ctx.fillStyle = this.colors.get(car.id);
-            ctx.fillRect(cloc.x+2,
-                    cloc.y+2,
-                    (size.scale-4),
-                    (size.scale-4));    
-        }
-    }
-    addCar (c, side) {
-        this.cars.push(c);
-        //Based on side, need to add car to right location.
-        var l, p;
-        var n = this.lanes;
-        var lane = c.loc.lane;
-        c.loc.pos = 0;
-        this.road[lane][0] = c;
-    }
-    setOutput (r, s) {
-        this.outs[s] = r;
-    }
-    updateCarStraight (car, c) {
-        var out = this.outs[this.outside];
-        if (car.loc.pos >= (this.lanes * 2 - 1)) {
-            this.passCar( out, car, car.loc.lane, c );
-        } else {
-            //Else, try to go straight
-            this.moveForward(car);
-        }
-    }
-    updateCarRight (car, c) {
-        var out = this.outs[this.outside];
-        //Car goes straight until its in the diagonal, then right until out
-        //diagonal is when pos == lane
-        if (car.loc.lane === 0) {
-            this.passCar( out, car, car.loc.pos, c );
-        } else {
-            if (car.loc.pos >= car.loc.lane) {
-                this.moveRight(car);
-            } else {
-                //Else, try to go straight
-                this.moveForward(car);
-            }
-        }
-    }
-    updateCarLeft (car, c) {
-        var out = this.outs[this.outside];
-        if (car.loc.lane === 2 * this.lanes - 1) {
-            //Try to pass car to output
-            var laneout = (2 * this.lanes - 1 - car.loc.pos);
-            this.passCar( out, car, laneout, c );
-        } else {
-            if (car.loc.pos <= 2*this.lanes - car.loc.pos - car.loc.lane) {
-                this.moveForward(car);
-            } else {
-                this.moveLeft(car);
-            }
-        }
-    }
-    passCar (out, car, laneout, c) {
-        if (out.open(laneout, 0)) {
-            out.addCar(new __WEBPACK_IMPORTED_MODULE_0__car_js__["a" /* default */](car.id, {lane: laneout, pos: 0, speed: car.speed}, car.type));
-            this.cars.splice(c, 1);
-            this.road[car.loc.lane][car.loc.pos] = 0;
-        }
-    }
-    moveForward (car) {
-        if (this.road[car.loc.lane][car.loc.pos + 1] === 0) {
-            this.road[car.loc.lane][car.loc.pos] = 0;
-            this.road[car.loc.lane][car.loc.pos+1] = car;
-            car.loc.pos++;
-        } else {
-            car.timer = this.threshold;
-        }
-    }
-    moveRight (car) {
-        if (this.road[car.loc.lane-1][car.loc.pos ] === 0) {
-            this.road[car.loc.lane][car.loc.pos] = 0;
-            this.road[car.loc.lane-1][car.loc.pos] = car;
-            car.loc.lane--;
-        } else {
-            car.timer = this.threshold;
-        }
-    }
-    moveLeft (car) {
-        if (this.road[car.loc.lane+1][car.loc.pos ] === 0) {
-            this.road[car.loc.lane][car.loc.pos] = 0;
-            this.road[car.loc.lane+1][car.loc.pos] = car;
-            car.loc.lane++;
-        } else {
-            car.timer = this.threshold;
-        }
-    }
-    open (lane, side) {
-        //Need to use orientation of sides to do this in a less shitty way.
-        return ((side === this.currentside) && this.road[lane][0] === 0);
-    }
-    getSide (mx, my) {
-        console.log("Inter getSide:", mx, my);
-        //Given mouse click, see what side its on.
-        //whichever quadrant its in. 
-        if (mx <= (this.base.x - this.lanes)) {
-            if (my <= (this.base.y - this.lanes)) {
-                return 0;
-            } else {
-                return 1;
-            }
-        } else {
-            if (my <= (this.base.y - this.lanes)) {
-                return 3;
-            } else {
-                return 2;
-            }
-        }
-    }
-    getOut (mx, my) {
-        console.log("Inter getOut:", mx, my);
-        if (mx <= (this.base.x - this.lanes)) {
-            if (my <= (this.base.y - this.lanes)) {
-                return 1;
-            } else {
-                return 2;
-            }
-        } else {
-            if (my <= (this.base.y - this.lanes)) {
-                return 0;
-            } else {
-                return 3;
-            }
-        }
-    }
-    getFrom (size, scale, side) {
-        //Need out location for line.
-        console.log("Inter getFrom: ", side);
-        var xr, yr;
-        switch (side) {
-            case 0:
-                xr = (this.base.x - (0.5) * this.lanes + 1) * scale + size.x0;
-                yr = (this.base.y - (2) * this.lanes + 1.5) * scale + size.y0;
-                break;
-            case 1:
-                xr = (this.base.x - (2) * this.lanes + 1.5) * scale + size.x0;
-                yr = (this.base.y - (1.5) * this.lanes + 1) * scale + size.y0;
-                break;
-            case 2:
-                xr = (this.base.x - (1.5) * this.lanes + 1) * scale + size.x0;
-                yr = (this.base.y + 0.5) * scale + size.y0;
-                break;
-            case 3:
-                xr = (this.base.x + 0.5) * scale + size.x0;
-                yr = (this.base.y - (0.5) * this.lanes + 1) * scale + size.y0;
-                break;
-            default:
-                break;
-        }
-        return {
-            x: xr,
-            y: yr
-        };
-    }
-    getTo (size, scale, side) {
-        //Use side to find 
-        var xr, yr;
-        switch (side) {
-            case 0:
-                xr = (this.base.x - (1.5) * this.lanes + 1) * scale + size.x0;
-                yr = (this.base.y - (2) * this.lanes + 1.5) * scale + size.y0;
-                break;
-            case 1:
-                xr = (this.base.x - (2) * this.lanes + 1.5) * scale + size.x0;
-                yr = (this.base.y - (0.5) * this.lanes + 1) * scale + size.y0;
-                break;
-            case 2:
-                xr = (this.base.x - (0.5) * this.lanes + 1) * scale + size.x0;
-                yr = (this.base.y + 0.5) * scale + size.y0;
-                break;
-            case 3:
-                xr = (this.base.x + 0.5) * scale + size.x0;
-                yr = (this.base.y - (1.5) * this.lanes + 1) * scale + size.y0;
-                break;
-            default:
-                break;
-        }
-        return {
-            x: xr,
-            y: yr
-        };
-    }
-    getO (o) {
-        switch (o) {
-            case 0:
-                return {x: -1, y: -1, xd: 1, yd: 1, lx: -1, ly: 0, px: 0, py: -1};
-                break;
-            case 1:
-                return {x: -1, y: 1, xd: 1, yd: 0, lx: 0, ly: 1, px: -1, py: 0};
-                break;
-            case 2:
-                return {x: 1, y: 1, xd: 0, yd: 0, lx: 1, ly: 0, px: 0, py: 1};
-                break;
-            case 3:
-                return {x: 1, y: -1, xd: 0, yd: 1, lx: 0, ly: -1, px: 1, py: 0};
-                break
-            default:
-
-        }
-    }
-    getDrawTransform (side) {
-        var ret;
-        switch (side) {
-            case 0:
-                ret = {
-                    dbasex: -1,
-                    dbasey: -1,
-                    lanex: 1,
-                    laney: 0,
-                    posx: 0,
-                    posy: 1
-                };
-                break;
-            case 1:
-                ret = {
-                    dbasex: -1,
-                    dbasey: 0,
-                    lanex: 0,
-                    laney: -1,
-                    posx: 1,
-                    posy: 0
-                };
-                break;
-            case 2:
-                ret = {
-                    dbasex: 0,
-                    dbasey: 0,
-                    lanex: -1,
-                    laney: 0,
-                    posx: 0,
-                    posy: -1
-                };
-                break;
-            case 3:
-                ret = {
-                    dbasex: 0,
-                    dbasey: -1,
-                    lanex: 0,
-                    laney: 1,
-                    posx: -1,
-                    posy: 0
-                };
-                break;
-            default:
-        }
-        return ret;
-    }
-};
-
-/* harmony default export */ __webpack_exports__["a"] = (Intersection);
-
-/***/ }),
-/* 4 */,
-/* 5 */,
-/* 6 */,
-/* 7 */,
-/* 8 */,
-/* 9 */,
-/* 10 */
+/***/ 158:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__traffic_simulation_js__ = __webpack_require__(11);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__traffic_road_js__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__traffic_intersection_js__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__traffic_car_js__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__simulation_js__ = __webpack_require__(159);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__road_js__ = __webpack_require__(92);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__intersection_js__ = __webpack_require__(93);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__car_js__ = __webpack_require__(50);
 // import '../style.css';
 
 
@@ -756,43 +82,43 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 var canvas = $("#trafficcanvas");
 var container = $('.terminal');
-var sim = new __WEBPACK_IMPORTED_MODULE_0__traffic_simulation_js__["a" /* default */](canvas, container);
+var sim = new __WEBPACK_IMPORTED_MODULE_0__simulation_js__["a" /* default */](canvas, container);
 
-sim.addRoad(new __WEBPACK_IMPORTED_MODULE_1__traffic_road_js__["a" /* default */]({x: 8, y: 20}, 0, 15, 2)); //0 - Up   (leftish)
-sim.addRoad(new __WEBPACK_IMPORTED_MODULE_1__traffic_road_js__["a" /* default */]({x: 38, y: 20}, 0, 15, 2)); //1 - Up   (rightish)
-sim.addRoad(new __WEBPACK_IMPORTED_MODULE_1__traffic_road_js__["a" /* default */]({x: 34, y: 21}, 1, 26, 2)); //2 - Left (lower)
-sim.addRoad(new __WEBPACK_IMPORTED_MODULE_1__traffic_road_js__["a" /* default */]({x: 34,  y: 2}, 1, 26, 2)); //3 - Left (upper)
-sim.addRoad(new __WEBPACK_IMPORTED_MODULE_1__traffic_road_js__["a" /* default */]({x: 5,  y: 6}, 2, 15, 2)); //4 - Down  (leftsh)
-sim.addRoad(new __WEBPACK_IMPORTED_MODULE_1__traffic_road_js__["a" /* default */]({x: 35, y: 6}, 2, 15, 2));//5 - Down  (rightish)
-sim.addRoad(new __WEBPACK_IMPORTED_MODULE_1__traffic_road_js__["a" /* default */]({x: 9, y: 24}, 3, 26, 2));//6 - Right (lower)
-sim.addRoad(new __WEBPACK_IMPORTED_MODULE_1__traffic_road_js__["a" /* default */]({x: 9, y: 5}, 3, 26, 2));//7 - Rght (uppwr)
+sim.addRoad(new __WEBPACK_IMPORTED_MODULE_1__road_js__["a" /* default */]({x: 8, y: 20}, 0, 15, 2)); //0 - Up   (leftish)
+sim.addRoad(new __WEBPACK_IMPORTED_MODULE_1__road_js__["a" /* default */]({x: 38, y: 20}, 0, 15, 2)); //1 - Up   (rightish)
+sim.addRoad(new __WEBPACK_IMPORTED_MODULE_1__road_js__["a" /* default */]({x: 34, y: 21}, 1, 26, 2)); //2 - Left (lower)
+sim.addRoad(new __WEBPACK_IMPORTED_MODULE_1__road_js__["a" /* default */]({x: 34,  y: 2}, 1, 26, 2)); //3 - Left (upper)
+sim.addRoad(new __WEBPACK_IMPORTED_MODULE_1__road_js__["a" /* default */]({x: 5,  y: 6}, 2, 15, 2)); //4 - Down  (leftsh)
+sim.addRoad(new __WEBPACK_IMPORTED_MODULE_1__road_js__["a" /* default */]({x: 35, y: 6}, 2, 15, 2));//5 - Down  (rightish)
+sim.addRoad(new __WEBPACK_IMPORTED_MODULE_1__road_js__["a" /* default */]({x: 9, y: 24}, 3, 26, 2));//6 - Right (lower)
+sim.addRoad(new __WEBPACK_IMPORTED_MODULE_1__road_js__["a" /* default */]({x: 9, y: 5}, 3, 26, 2));//7 - Rght (uppwr)
 
-sim.addIntersection(new __WEBPACK_IMPORTED_MODULE_2__traffic_intersection_js__["a" /* default */]({x: 8, y: 5}, 2, 1));//0 (up left)
-sim.addIntersection(new __WEBPACK_IMPORTED_MODULE_2__traffic_intersection_js__["a" /* default */]({x: 38, y: 5}, 2, 1));//1 (up right)
-sim.addIntersection(new __WEBPACK_IMPORTED_MODULE_2__traffic_intersection_js__["a" /* default */]({x: 38, y: 24}, 2, 1));//2 (down right)
-sim.addIntersection(new __WEBPACK_IMPORTED_MODULE_2__traffic_intersection_js__["a" /* default */]({x: 8, y: 24}, 2, 1));//3 (down left)
+sim.addIntersection(new __WEBPACK_IMPORTED_MODULE_2__intersection_js__["a" /* default */]({x: 8, y: 5}, 2, 1));//0 (up left)
+sim.addIntersection(new __WEBPACK_IMPORTED_MODULE_2__intersection_js__["a" /* default */]({x: 38, y: 5}, 2, 1));//1 (up right)
+sim.addIntersection(new __WEBPACK_IMPORTED_MODULE_2__intersection_js__["a" /* default */]({x: 38, y: 24}, 2, 1));//2 (down right)
+sim.addIntersection(new __WEBPACK_IMPORTED_MODULE_2__intersection_js__["a" /* default */]({x: 8, y: 24}, 2, 1));//3 (down left)
 
-sim.addCar(0, new __WEBPACK_IMPORTED_MODULE_3__traffic_car_js__["a" /* default */](0, {lane: 0, pos: 1, speed: 30}, 0));
-sim.addCar(0, new __WEBPACK_IMPORTED_MODULE_3__traffic_car_js__["a" /* default */](1, {lane: 0, pos: 5, speed: 50}, 0));
-sim.addCar(0, new __WEBPACK_IMPORTED_MODULE_3__traffic_car_js__["a" /* default */](2, {lane: 0, pos: 10, speed: 70}, 0));
-sim.addCar(0, new __WEBPACK_IMPORTED_MODULE_3__traffic_car_js__["a" /* default */](3, {lane: 1, pos: 1, speed: 50}, 0));
+sim.addCar(0, new __WEBPACK_IMPORTED_MODULE_3__car_js__["a" /* default */](0, {lane: 0, pos: 1, speed: 30}, 0));
+sim.addCar(0, new __WEBPACK_IMPORTED_MODULE_3__car_js__["a" /* default */](1, {lane: 0, pos: 5, speed: 50}, 0));
+sim.addCar(0, new __WEBPACK_IMPORTED_MODULE_3__car_js__["a" /* default */](2, {lane: 0, pos: 10, speed: 70}, 0));
+sim.addCar(0, new __WEBPACK_IMPORTED_MODULE_3__car_js__["a" /* default */](3, {lane: 1, pos: 1, speed: 50}, 0));
 
-sim.addCar(4, new __WEBPACK_IMPORTED_MODULE_3__traffic_car_js__["a" /* default */](4, {lane: 0, pos: 1, speed: 30}, 0));
+sim.addCar(4, new __WEBPACK_IMPORTED_MODULE_3__car_js__["a" /* default */](4, {lane: 0, pos: 1, speed: 30}, 0));
 // sim.addCar(4, new Car(5, {lane: 0, pos: 5, speed: 50}, 0));
 // sim.addCar(4, new Car(6, {lane: 0, pos: 12, speed: 80}, 0));
 // sim.addCar(4, new Car(7, {lane: 1, pos: 1, speed: 50}, 0));
 
-sim.addCar(5, new __WEBPACK_IMPORTED_MODULE_3__traffic_car_js__["a" /* default */](8, {lane: 0, pos: 1, speed: 30}, 0));
-sim.addCar(5, new __WEBPACK_IMPORTED_MODULE_3__traffic_car_js__["a" /* default */](9, {lane: 0, pos: 5, speed: 50}, 0));
-sim.addCar(5, new __WEBPACK_IMPORTED_MODULE_3__traffic_car_js__["a" /* default */](10, {lane: 1, pos: 1, speed: 50}, 0));
+sim.addCar(5, new __WEBPACK_IMPORTED_MODULE_3__car_js__["a" /* default */](8, {lane: 0, pos: 1, speed: 30}, 0));
+sim.addCar(5, new __WEBPACK_IMPORTED_MODULE_3__car_js__["a" /* default */](9, {lane: 0, pos: 5, speed: 50}, 0));
+sim.addCar(5, new __WEBPACK_IMPORTED_MODULE_3__car_js__["a" /* default */](10, {lane: 1, pos: 1, speed: 50}, 0));
 
-sim.addCar(6, new __WEBPACK_IMPORTED_MODULE_3__traffic_car_js__["a" /* default */](11, {lane: 0, pos: 1, speed: 30}, 0));
-sim.addCar(6, new __WEBPACK_IMPORTED_MODULE_3__traffic_car_js__["a" /* default */](12, {lane: 0, pos: 5, speed: 50}, 0));
-sim.addCar(6, new __WEBPACK_IMPORTED_MODULE_3__traffic_car_js__["a" /* default */](13, {lane: 1, pos: 1, speed: 50}, 0));
+sim.addCar(6, new __WEBPACK_IMPORTED_MODULE_3__car_js__["a" /* default */](11, {lane: 0, pos: 1, speed: 30}, 0));
+sim.addCar(6, new __WEBPACK_IMPORTED_MODULE_3__car_js__["a" /* default */](12, {lane: 0, pos: 5, speed: 50}, 0));
+sim.addCar(6, new __WEBPACK_IMPORTED_MODULE_3__car_js__["a" /* default */](13, {lane: 1, pos: 1, speed: 50}, 0));
 
-sim.addCar(7, new __WEBPACK_IMPORTED_MODULE_3__traffic_car_js__["a" /* default */](14, {lane: 0, pos: 1, speed: 30}, 0));
-sim.addCar(7, new __WEBPACK_IMPORTED_MODULE_3__traffic_car_js__["a" /* default */](15, {lane: 0, pos: 5, speed: 50}, 0));
-sim.addCar(7, new __WEBPACK_IMPORTED_MODULE_3__traffic_car_js__["a" /* default */](16, {lane: 1, pos: 1, speed: 50}, 0));
+sim.addCar(7, new __WEBPACK_IMPORTED_MODULE_3__car_js__["a" /* default */](14, {lane: 0, pos: 1, speed: 30}, 0));
+sim.addCar(7, new __WEBPACK_IMPORTED_MODULE_3__car_js__["a" /* default */](15, {lane: 0, pos: 5, speed: 50}, 0));
+sim.addCar(7, new __WEBPACK_IMPORTED_MODULE_3__car_js__["a" /* default */](16, {lane: 1, pos: 1, speed: 50}, 0));
 
 //Upperleft
 sim.connectRtoI(0, 0, 2);
@@ -821,13 +147,14 @@ sim.connectItoR(3, 0, 0);
 sim.run();
 
 /***/ }),
-/* 11 */
+
+/***/ 159:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__car_js__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__colorpicker_js__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__inputhandler_js__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__car_js__ = __webpack_require__(50);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__colorpicker_js__ = __webpack_require__(72);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__inputhandler_js__ = __webpack_require__(160);
 
 
 
@@ -1015,13 +342,14 @@ function Driver() {
 /* harmony default export */ __webpack_exports__["a"] = (Simulation);
 
 /***/ }),
-/* 12 */
+
+/***/ 160:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__road_js__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__car_js__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__intersection_js__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__road_js__ = __webpack_require__(92);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__car_js__ = __webpack_require__(50);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__intersection_js__ = __webpack_require__(93);
 
 
 
@@ -1733,5 +1061,679 @@ function Driver() {
 
 /* harmony default export */ __webpack_exports__["a"] = (InputHandler);
 
+/***/ }),
+
+/***/ 50:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+class Car {
+    constructor(id, cardata, type){
+		this.id = id;
+		this.loc = {lane: cardata.lane, pos: cardata.pos};
+		this.type = type;
+		this.speed = cardata.speed;
+		this.timer = 0;
+    }
+};
+/* harmony default export */ __webpack_exports__["a"] = (Car);
+
+
+/***/ }),
+
+/***/ 72:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+class ColorPicker {
+    constructor(n){
+    	this.s = 90;
+	    this.l = 40;
+	    this.delta = 360 / n;
+    }
+};
+$.extend(ColorPicker.prototype, {
+    //Returns the css color string used by canvas
+    get: function (c) {
+        var ret = 'hsl(' + c * this.delta + ',' + this.s + '%,' + this.l + '%' + ')';
+        return ret;
+    }
+});
+/* harmony default export */ __webpack_exports__["a"] = (ColorPicker);
+
+/***/ }),
+
+/***/ 92:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__car_js__ = __webpack_require__(50);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__colorpicker_js__ = __webpack_require__(72);
+
+
+
+class Road {
+    //Roads track their 0lane, 0pos, lanes, length, and orientation
+    //TODO - make orientation not shitty.  Either enum like driver, or use explicit
+    //     - names in an input object that describe the orientation 'vectors' of the
+    //     - lane and position directions ex: {lanex: 0, laney: -1, posx: 1, posy: 0} 
+    //     - orientation is a bunch of vectors that could probably be more simply
+    //     - expressed but w.e  it works right now. 
+    constructor(rdata, orientation, length, lanes){
+	    this.orientation = orientation;    // 0 iup (-y), 1 ileft(-x), 2 idown(+y), 3 iright(+x)
+	    this.o = {x: 0, y: 0, xd: 0, yd: 0, lx: -1, ly: 0, lanes: lanes};
+	    this.length = length;
+	    this.lanes = lanes;
+	    this.out = "none";   //Out is where cars are passed when they get to the end.
+	    this.outside = 0;
+	    this.outs = [];
+	    this.outs[0] = "none";
+
+	    this.colors = new __WEBPACK_IMPORTED_MODULE_1__colorpicker_js__["a" /* default */](7);
+
+	    this.start = {xn: rdata.x, yn: rdata.y, x: 0, y: 0};
+
+	    this.dim = {
+	        xn0: rdata.x,
+	        yn0: rdata.y,
+	        xd0: 0,
+	        yd0: 0,
+	        dx: 0,
+	        dy: 0};
+
+	    //Orientation and dimensions - makes drawing easier
+	    this.o = this.getO(this.orientation);
+	    this.dim.xd0 = this.dim.xn0 + this.o.xd;
+	    this.dim.yd0 = this.dim.yn0 + this.o.yd;
+	    this.dim.dx = this.o.lx * this.lanes + this.o.px * this.length;
+	    this.dim.dy = this.o.ly * this.lanes + this.o.py * this.length;
+
+	    this.cars = [];
+	    this.road = [];
+	    for (var i = 0; i < lanes; i++) {
+	        this.road[i] = [];
+	        for (var j = 0; j < length; j++) {
+	            this.road[i][j] = 0;
+	        }
+	    }
+	}
+	
+	draw(ctx, size) {
+        this.drawPavement(ctx, size);
+        this.drawCars(ctx, size);
+    }
+
+    update() {
+        //Update Cars
+        //If an update pushes a car to the intersection, it asks the
+        //intersection if it can proceed, if so, pass and then remove
+        var forward = 0, depass = 1, pass = 1, position = 0, car = 0;
+        for (var c = 0; c < this.cars.length; c++) {
+            car = this.cars[c];
+
+            if (car.timer++ > car.speed) {
+                car.timer = 0;
+                //If near end, do intersection shit
+                if (car.loc.pos === (this.length - 1) && this.out !== "none") {
+                    if (this.out.open(car.loc.lane, this.outside)) {
+                        this.out.addCar(new __WEBPACK_IMPORTED_MODULE_0__car_js__["a" /* default */](car.id, {lane: car.loc.lane, pos: 0, speed: car.speed}, car.type), this.outside);
+                        this.cars.splice(c, 1);
+                        this.road[car.loc.lane][car.loc.pos] = 0;
+                    }
+                } else {
+                    switch (car.type) {
+                        case 0:
+                            //If you can depass, depass.
+                            if (car.loc.lane > 0) {
+                                depass = this.road[car.loc.lane - 1][ car.loc.pos + 1 ];
+                                if (depass === 0) {
+                                    //TODO - Depass function outta scope
+                                    this.depass(car);
+                                    return;
+                                }
+                            }
+                            //If forward is clear go, else pass
+                            forward = this.road[car.loc.lane + 0][car.loc.pos + 1];
+                            if (forward === 0) {
+                                this.moveForward(car);
+                                return;
+                            } else {
+                                if (car.loc.lane < (this.lanes - 1)) {
+                                    pass = this.road[car.loc.lane + 1][ car.loc.pos + 1 ];
+                                    if (pass === 0) {
+                                        //TODO - Pass function outta scope
+                                        this.pass(car);
+                                        return;
+                                    }
+                                }
+                            }
+                            break;
+                        // case Driver().CRAZY:
+                        //     break;
+                        default:
+                            break;
+                    }
+                }
+            }
+        }
+    }
+
+    drawPavement(ctx, size) {
+        //Grey rectangle under the road
+        ctx.fillStyle = "lightgrey";
+        var x0 = (size.scale * (this.dim.xd0)) + size.x0;
+        var y0 = (size.scale * (this.dim.yd0)) + size.y0;
+        ctx.beginPath();
+        ctx.rect(x0,
+                y0,
+                size.scale * this.dim.dx,
+                size.scale * this.dim.dy);
+        ctx.fill();
+
+        //Outline the road
+        ctx.strokeStyle = "black";
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(x0, y0);
+        ctx.lineTo(x0 + (size.scale * this.o.px * this.length), y0 + (size.scale * this.o.py * this.length));
+        ctx.stroke();
+        ctx.beginPath();
+        var xl = 0, yl = 0;
+        xl = x0 + (size.scale * this.o.lx * this.lanes);
+        yl = y0 + (size.scale * this.o.ly * this.lanes);
+        ctx.moveTo(xl, yl);
+        ctx.lineTo(xl + (size.scale * this.o.px * this.length), yl + (size.scale * this.o.py * this.length));
+        ctx.stroke();
+
+        //Draw lane lines
+        if (this.lanes > 1) {
+            ctx.strokeStyle = "darkgrey";
+            ctx.lineWidth = 3;
+            var xp = 0, yp = 0;
+            for (var l = 1; l < (this.lanes); l++) {
+                xl = x0 + (size.scale * this.o.lx * l);
+                yl = y0 + (size.scale * this.o.ly * l);
+                for (var p = 0; p < this.length; p += 2) {
+                    xp = xl + (size.scale * this.o.px * p);
+                    yp = yl + (size.scale * this.o.py * p);
+                    ctx.beginPath();
+                    ctx.moveTo(xp, yp);
+                    ctx.lineTo(xp + (size.scale * this.o.px), yp + (size.scale * this.o.py));
+                    ctx.stroke();
+                }
+            }
+        }
+    }
+
+    drawCars(ctx, size) {
+        var cloc = {x: 0, y: 0};
+        for (var c = 0; c < this.cars.length; c++) {
+            var car = this.cars[c];
+            cloc.x = size.scale * (this.dim.xd0 + (this.o.lx * car.loc.lane) + (this.o.px * car.loc.pos)) + size.x0;
+            cloc.y = size.scale * (this.dim.yd0 + (this.o.ly * car.loc.lane) + (this.o.py * car.loc.pos)) + size.y0;
+            ctx.beginPath();
+            ctx.fillStyle = this.colors.get(car.id);
+            ctx.fillRect(cloc.x + 2*(this.o.x),
+                    cloc.y+ 2*(this.o.y),
+                    (size.scale * (this.o.x) - 4*(this.o.x)),
+                    (size.scale * (this.o.y) - 4*(this.o.y)));
+        }
+    }
+
+    addCar(c) {
+        this.cars.push(c);
+        this.road[c.loc.lane][c.loc.pos] = c;
+    }
+
+    setOutput(r, s) {
+        this.out = r;
+        this.outs[0] = r;
+        this.outside = s;
+    }
+
+    depass(c) {
+        this.road[c.loc.lane][c.loc.pos] = 0;
+        c.loc.lane--;
+        c.loc.pos++;
+        this.road[c.loc.lane][c.loc.pos] = 1;
+    }
+
+    moveForward(c) {
+        this.road[c.loc.lane][c.loc.pos] = 0;
+        c.loc.pos++;
+        this.road[c.loc.lane][c.loc.pos] = 1;
+    }
+
+    pass(c) {
+        this.road[c.loc.lane][c.loc.pos] = 0;
+        c.loc.lane++;
+        c.loc.pos++;
+        this.road[c.loc.lane][c.loc.pos] = 1;
+    }
+
+    open(lane, s) {
+        return (this.road[lane][0] === 0);
+    }
+
+    add(c) {
+        this.cars.push(c);
+        var n = this.cars.length;
+        //this.cars[n - 1].loc = {lane: 0, pos: 0};
+        this.road[c.loc.lane][0] = c;
+    }
+
+    getFrom(size, scale, side) {
+        var xout, yout;
+        xout = (this.dim.xd0
+                + (this.length - 0.5) * this.o.px
+                + (this.lanes / 2) * this.o.lx) * scale
+                + size.x0;
+        yout = (this.dim.yd0
+                + (this.length - 0.5) * this.o.py
+                + (this.lanes / 2) * this.o.ly) * scale
+                + size.y0;
+        return {x: xout, y: yout};
+    }
+
+    getTo(size, scale, side) {
+        return {
+            x: (this.dim.xd0 + 0.5 * this.o.lx * this.lanes + this.o.px * (0.5)) * scale + size.x0,
+            y: (this.dim.yd0 + 0.5 * this.o.ly * this.lanes + this.o.py * (0.5)) * scale + size.y0
+        };
+    }
+
+    getO(o) {
+        switch (o) {
+            case 0:
+                return {x: -1, y: -1, xd: 1, yd: 1, lx: -1, ly: 0, px: 0, py: -1};
+                break;
+            case 1:
+                return {x: -1, y: 1, xd: 1, yd: 0, lx: 0, ly: 1, px: -1, py: 0};
+                break;
+            case 2:
+                return {x: 1, y: 1, xd: 0, yd: 0, lx: 1, ly: 0, px: 0, py: 1};
+                break;
+            case 3:
+                return {x: 1, y: -1, xd: 0, yd: 1, lx: 0, ly: -1, px: 1, py: 0};
+                break
+            default:
+
+        }
+    }
+};
+
+/* harmony default export */ __webpack_exports__["a"] = (Road);
+
+/***/ }),
+
+/***/ 93:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__car_js__ = __webpack_require__(50);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__colorpicker_js__ = __webpack_require__(72);
+
+
+
+class Intersection {
+    //Base point is the lower right corner on the grid, in grid units
+    constructor (basepoint, lanecount, type) {
+        this.base = {x: basepoint.x, y: basepoint.y};
+        this.lanes = lanecount;
+        this.type = type;
+        this.colors = new __WEBPACK_IMPORTED_MODULE_1__colorpicker_js__["a" /* default */](7);
+
+        //Sides basically are in's and out's, 4 of um
+        this.outs = [];     //Point to roads
+        for (var i = 0; i < 4; i++) {
+            this.outs[i] = "none";
+        }
+
+        //Fields needed for managing logic.
+        this.timer = 0;
+        this.threshold = 200;
+        this.currentside = 0;   //Side 'in', same orientation as roads
+        this.cycle = 0;
+        this.outside = 1;
+
+        this.cars = [];
+        this.road = [];//Square road this time.  the side is a road, same as before
+        //Bottom right is 0,0, 'left turn' goes towards 2n,2n corner
+        for (var i = 0; i < this.lanes * 2; i++) {
+            this.road[i] = [];
+            for (var j = 0; j < this.lanes * 2; j++) {
+                this.road[i][j] = 0;
+            }
+        }
+    }
+
+    update() {
+        var side = this.currentside;
+        var out = (this.currentside + this.cycle + 1) % 4;
+        console.log(this.cars);
+        //Only do stuff/allow cars in if there is an output that way.
+        if (this.outs[out] !== "none") {
+            for (var c = 0; c < this.cars.length; c++) {
+                var car = this.cars[c];
+                car.timer++;
+                if (car.timer > car.speed) {
+                    car.timer = 0;
+                    switch (this.cycle) {
+                        case 0:  //Right                            
+                            this.updateCarRight(car, c);
+                            break;
+                        case 1:  //Straight
+                            this.updateCarStraight(car, c);
+                            break;
+                        case 2:  //Left
+                            this.updateCarLeft(car, c);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+        } else {
+            this.timer = this.threshold;
+        }
+
+        //Increment timer, and change stuff if necessary
+        this.timer++;
+        if ((this.timer > this.threshold) && (this.cars.length === 0)) {
+            this.cycle = Math.floor(Math.random() * 3);
+            this.currentside = (this.currentside + 1) % 4;
+            this.outside = (this.currentside + this.cycle + 1) % 4;
+            this.timer = 0;
+        }
+    }
+    draw (ctx, size) {
+        this.drawPavement(ctx, size);
+        this.drawCars(ctx, size);
+    }
+    drawPavement (ctx, size) {
+        //Grey square under the intersection
+        ctx.fillStyle = "lightgrey";
+        var x0 = (size.scale * (this.base.x + 1)) + size.x0;
+        var y0 = (size.scale * (this.base.y + 1)) + size.y0;
+        var d = -2 * size.scale * this.lanes;
+        ctx.beginPath();
+        ctx.rect(x0, y0, d, d);
+        ctx.fill();
+
+        ctx.strokeStyle = "darkgrey";
+        ctx.beginPath();
+        ctx.setLineDash([size.scale * this.lanes]);
+        ctx.lineWidth = 3;
+        ctx.rect(x0, y0, d, d);
+        ctx.stroke();
+        ctx.setLineDash([0]);
+    }
+    drawCars (ctx, size) {
+        //Need to draw cars based on road orientation.
+        var t = this.getDrawTransform(this.currentside);
+
+        //Transform array position to draw position
+        var cloc = {x: 0, y: 0};
+        for (var c = 0; c < this.cars.length; c++) {
+            var car = this.cars[c];
+            cloc.x = size.scale * ((this.base.x + t.dbasex * (2 * this.lanes - 1)) + t.lanex * car.loc.lane + t.posx * car.loc.pos) + size.x0;
+            cloc.y = size.scale * ((this.base.y + t.dbasey * (2 * this.lanes - 1)) + t.laney * car.loc.lane + t.posy * car.loc.pos) + size.y0;
+            ctx.beginPath();
+            ctx.fillStyle = this.colors.get(car.id);
+            ctx.fillRect(cloc.x+2,
+                    cloc.y+2,
+                    (size.scale-4),
+                    (size.scale-4));    
+        }
+    }
+    addCar (c, side) {
+        this.cars.push(c);
+        //Based on side, need to add car to right location.
+        var l, p;
+        var n = this.lanes;
+        var lane = c.loc.lane;
+        c.loc.pos = 0;
+        this.road[lane][0] = c;
+    }
+    setOutput (r, s) {
+        this.outs[s] = r;
+    }
+    updateCarStraight (car, c) {
+        var out = this.outs[this.outside];
+        if (car.loc.pos >= (this.lanes * 2 - 1)) {
+            this.passCar( out, car, car.loc.lane, c );
+        } else {
+            //Else, try to go straight
+            this.moveForward(car);
+        }
+    }
+    updateCarRight (car, c) {
+        var out = this.outs[this.outside];
+        //Car goes straight until its in the diagonal, then right until out
+        //diagonal is when pos == lane
+        if (car.loc.lane === 0) {
+            this.passCar( out, car, car.loc.pos, c );
+        } else {
+            if (car.loc.pos >= car.loc.lane) {
+                this.moveRight(car);
+            } else {
+                //Else, try to go straight
+                this.moveForward(car);
+            }
+        }
+    }
+    updateCarLeft (car, c) {
+        var out = this.outs[this.outside];
+        if (car.loc.lane === 2 * this.lanes - 1) {
+            //Try to pass car to output
+            var laneout = (2 * this.lanes - 1 - car.loc.pos);
+            this.passCar( out, car, laneout, c );
+        } else {
+            if (car.loc.pos <= 2*this.lanes - car.loc.pos - car.loc.lane) {
+                this.moveForward(car);
+            } else {
+                this.moveLeft(car);
+            }
+        }
+    }
+    passCar (out, car, laneout, c) {
+        if (out.open(laneout, 0)) {
+            out.addCar(new __WEBPACK_IMPORTED_MODULE_0__car_js__["a" /* default */](car.id, {lane: laneout, pos: 0, speed: car.speed}, car.type));
+            this.cars.splice(c, 1);
+            this.road[car.loc.lane][car.loc.pos] = 0;
+        }
+    }
+    moveForward (car) {
+        if (this.road[car.loc.lane][car.loc.pos + 1] === 0) {
+            this.road[car.loc.lane][car.loc.pos] = 0;
+            this.road[car.loc.lane][car.loc.pos+1] = car;
+            car.loc.pos++;
+        } else {
+            car.timer = this.threshold;
+        }
+    }
+    moveRight (car) {
+        if (this.road[car.loc.lane-1][car.loc.pos ] === 0) {
+            this.road[car.loc.lane][car.loc.pos] = 0;
+            this.road[car.loc.lane-1][car.loc.pos] = car;
+            car.loc.lane--;
+        } else {
+            car.timer = this.threshold;
+        }
+    }
+    moveLeft (car) {
+        if (this.road[car.loc.lane+1][car.loc.pos ] === 0) {
+            this.road[car.loc.lane][car.loc.pos] = 0;
+            this.road[car.loc.lane+1][car.loc.pos] = car;
+            car.loc.lane++;
+        } else {
+            car.timer = this.threshold;
+        }
+    }
+    open (lane, side) {
+        //Need to use orientation of sides to do this in a less shitty way.
+        return ((side === this.currentside) && this.road[lane][0] === 0);
+    }
+    getSide (mx, my) {
+        console.log("Inter getSide:", mx, my);
+        //Given mouse click, see what side its on.
+        //whichever quadrant its in. 
+        if (mx <= (this.base.x - this.lanes)) {
+            if (my <= (this.base.y - this.lanes)) {
+                return 0;
+            } else {
+                return 1;
+            }
+        } else {
+            if (my <= (this.base.y - this.lanes)) {
+                return 3;
+            } else {
+                return 2;
+            }
+        }
+    }
+    getOut (mx, my) {
+        console.log("Inter getOut:", mx, my);
+        if (mx <= (this.base.x - this.lanes)) {
+            if (my <= (this.base.y - this.lanes)) {
+                return 1;
+            } else {
+                return 2;
+            }
+        } else {
+            if (my <= (this.base.y - this.lanes)) {
+                return 0;
+            } else {
+                return 3;
+            }
+        }
+    }
+    getFrom (size, scale, side) {
+        //Need out location for line.
+        console.log("Inter getFrom: ", side);
+        var xr, yr;
+        switch (side) {
+            case 0:
+                xr = (this.base.x - (0.5) * this.lanes + 1) * scale + size.x0;
+                yr = (this.base.y - (2) * this.lanes + 1.5) * scale + size.y0;
+                break;
+            case 1:
+                xr = (this.base.x - (2) * this.lanes + 1.5) * scale + size.x0;
+                yr = (this.base.y - (1.5) * this.lanes + 1) * scale + size.y0;
+                break;
+            case 2:
+                xr = (this.base.x - (1.5) * this.lanes + 1) * scale + size.x0;
+                yr = (this.base.y + 0.5) * scale + size.y0;
+                break;
+            case 3:
+                xr = (this.base.x + 0.5) * scale + size.x0;
+                yr = (this.base.y - (0.5) * this.lanes + 1) * scale + size.y0;
+                break;
+            default:
+                break;
+        }
+        return {
+            x: xr,
+            y: yr
+        };
+    }
+    getTo (size, scale, side) {
+        //Use side to find 
+        var xr, yr;
+        switch (side) {
+            case 0:
+                xr = (this.base.x - (1.5) * this.lanes + 1) * scale + size.x0;
+                yr = (this.base.y - (2) * this.lanes + 1.5) * scale + size.y0;
+                break;
+            case 1:
+                xr = (this.base.x - (2) * this.lanes + 1.5) * scale + size.x0;
+                yr = (this.base.y - (0.5) * this.lanes + 1) * scale + size.y0;
+                break;
+            case 2:
+                xr = (this.base.x - (0.5) * this.lanes + 1) * scale + size.x0;
+                yr = (this.base.y + 0.5) * scale + size.y0;
+                break;
+            case 3:
+                xr = (this.base.x + 0.5) * scale + size.x0;
+                yr = (this.base.y - (1.5) * this.lanes + 1) * scale + size.y0;
+                break;
+            default:
+                break;
+        }
+        return {
+            x: xr,
+            y: yr
+        };
+    }
+    getO (o) {
+        switch (o) {
+            case 0:
+                return {x: -1, y: -1, xd: 1, yd: 1, lx: -1, ly: 0, px: 0, py: -1};
+                break;
+            case 1:
+                return {x: -1, y: 1, xd: 1, yd: 0, lx: 0, ly: 1, px: -1, py: 0};
+                break;
+            case 2:
+                return {x: 1, y: 1, xd: 0, yd: 0, lx: 1, ly: 0, px: 0, py: 1};
+                break;
+            case 3:
+                return {x: 1, y: -1, xd: 0, yd: 1, lx: 0, ly: -1, px: 1, py: 0};
+                break
+            default:
+
+        }
+    }
+    getDrawTransform (side) {
+        var ret;
+        switch (side) {
+            case 0:
+                ret = {
+                    dbasex: -1,
+                    dbasey: -1,
+                    lanex: 1,
+                    laney: 0,
+                    posx: 0,
+                    posy: 1
+                };
+                break;
+            case 1:
+                ret = {
+                    dbasex: -1,
+                    dbasey: 0,
+                    lanex: 0,
+                    laney: -1,
+                    posx: 1,
+                    posy: 0
+                };
+                break;
+            case 2:
+                ret = {
+                    dbasex: 0,
+                    dbasey: 0,
+                    lanex: -1,
+                    laney: 0,
+                    posx: 0,
+                    posy: -1
+                };
+                break;
+            case 3:
+                ret = {
+                    dbasex: 0,
+                    dbasey: -1,
+                    lanex: 0,
+                    laney: 1,
+                    posx: -1,
+                    posy: 0
+                };
+                break;
+            default:
+        }
+        return ret;
+    }
+};
+
+/* harmony default export */ __webpack_exports__["a"] = (Intersection);
+
 /***/ })
-/******/ ]);
+
+/******/ });

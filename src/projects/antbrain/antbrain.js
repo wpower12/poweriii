@@ -1,4 +1,4 @@
-import Experiment from './antbrain/gp_experiment.js';
+import Experiment from './gp_experiment.js';
 
 var exp = new Experiment();
 

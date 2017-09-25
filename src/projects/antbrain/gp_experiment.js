@@ -89,7 +89,7 @@ function crossover(p1, p2){
 	// Traverse each, randomly select a node weighted by depth?
 	// How to traverse and have an equal chance to pick a node 
 	// from each depth?
-	return [p1, p2];
+	return p1;
 }
 
 function zip( l1, l2 ){

@@ -1,8 +1,8 @@
 // import '../style.css';
-import Simulation from './traffic/simulation.js';
-import Road from './traffic/road.js';
-import Intersection from './traffic/intersection.js';
-import Car from './traffic/car.js';
+import Simulation from './simulation.js';
+import Road from './road.js';
+import Intersection from './intersection.js';
+import Car from './car.js';
 
 var canvas = $("#trafficcanvas");
 var container = $('.terminal');

@@ -60,91 +60,20 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 14);
+/******/ 	return __webpack_require__(__webpack_require__.s = 162);
 /******/ })
 /************************************************************************/
-/******/ ([
-/* 0 */,
-/* 1 */,
-/* 2 */,
-/* 3 */,
-/* 4 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/******/ ({
 
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__generator_js__ = __webpack_require__(16);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__nodes_internal_js__ = __webpack_require__(17);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__nodes_external_js__ = __webpack_require__(20);
-/**
- * Class for generating the Basic program trees.  
-**/
-
-
-
-
-
-class BasicGenerator extends __WEBPACK_IMPORTED_MODULE_0__generator_js__["a" /* default */] {
-	constructor(){
-		super();
-	}
-
-	get_random_internal(){
-		var dir = getRandomInt(0, 8); // One of the 7 [0, 6] possible directions to look
-		if(dir < 7){
-			return new __WEBPACK_IMPORTED_MODULE_1__nodes_internal_js__["a" /* IF_XX */](dir); 
-		} else {
-			return new __WEBPACK_IMPORTED_MODULE_1__nodes_internal_js__["b" /* RAND */]();
-		}
-	}
-
-	get_random_terminal(){
-		var dir = getRandomInt(0, 4); // One of the 4 [0,3] possible directions to move
-		return new __WEBPACK_IMPORTED_MODULE_2__nodes_external_js__["a" /* default */](dir); 
-	}
-}
-
-function getRandomInt(min, max) {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  //The maximum is exclusive and the minimum is inclusive
-  return Math.floor(Math.random() * (max - min)) + min; 
-}
-
-/* harmony default export */ __webpack_exports__["a"] = (BasicGenerator);
-
-/***/ }),
-/* 5 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-function fmod( v1, v2 ){
-	var a = v1 % v2;
-	if(a < 0){
-		return v2 + a;
-	} else {
-		return a;
-	}
-}
-/* harmony default export */ __webpack_exports__["a"] = (fmod);
-
-/***/ }),
-/* 6 */,
-/* 7 */,
-/* 8 */,
-/* 9 */,
-/* 10 */,
-/* 11 */,
-/* 12 */,
-/* 13 */,
-/* 14 */
+/***/ 162:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__antbrain_gp_experiment_js__ = __webpack_require__(15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__gp_experiment_js__ = __webpack_require__(163);
 
 
-var exp = new __WEBPACK_IMPORTED_MODULE_0__antbrain_gp_experiment_js__["a" /* default */]();
+var exp = new __WEBPACK_IMPORTED_MODULE_0__gp_experiment_js__["a" /* default */]();
 
 exp.run();
 var cnv = document.getElementById('antcanvas');
@@ -153,13 +82,14 @@ exp.simulate_best(cnv);
 
 
 /***/ }),
-/* 15 */
+
+/***/ 163:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__basic_basic_generation_js__ = __webpack_require__(4);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__basic_basic_operate_js__ = __webpack_require__(21);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__basic_basic_simulation_js__ = __webpack_require__(22);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__basic_basic_generation_js__ = __webpack_require__(94);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__basic_basic_operate_js__ = __webpack_require__(169);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__basic_basic_simulation_js__ = __webpack_require__(170);
  
 
 
@@ -177,7 +107,7 @@ class Experiment {
 		this.generations = 50;
 		this.runs_per_eval = 5;
 	}
-	
+
 	run(){
 		this.population = build_population(this.gen, this.size, this.max_depth);
 		for( var g = 0; g < this.generations; g++){
@@ -224,7 +154,7 @@ function evaluate(sim, pop, rpe){
 function select_operate(op, fit, pop){
 	var pop_zip = zip(pop, fit); 
 	var new_pop = [];
-	for(var i = 0; i < fit.length/2; i++){
+	for(var i = 0; i < fit.length; i++){
 		var p1 = select_fps(pop_zip);
 		var p2 = select_fps(pop_zip);
 		new_pop = new_pop.concat( crossover(p1,p2) );
@@ -251,7 +181,7 @@ function crossover(p1, p2){
 	// Traverse each, randomly select a node weighted by depth?
 	// How to traverse and have an equal chance to pick a node 
 	// from each depth?
-	return [p1, p2];
+	return p1;
 }
 
 function zip( l1, l2 ){
@@ -286,7 +216,8 @@ function fit_cmp(a, b){
 /* harmony default export */ __webpack_exports__["a"] = (Experiment);
 
 /***/ }),
-/* 16 */
+
+/***/ 164:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -321,12 +252,13 @@ class Generator {
 /* harmony default export */ __webpack_exports__["a"] = (Generator);
 
 /***/ }),
-/* 17 */
+
+/***/ 165:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__if_xx_js__ = __webpack_require__(18);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__rand_js__ = __webpack_require__(19);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__if_xx_js__ = __webpack_require__(166);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__rand_js__ = __webpack_require__(167);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return __WEBPACK_IMPORTED_MODULE_0__if_xx_js__["a"]; });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return __WEBPACK_IMPORTED_MODULE_1__rand_js__["a"]; });
 
@@ -335,11 +267,12 @@ class Generator {
 
 
 /***/ }),
-/* 18 */
+
+/***/ 166:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__helper_js__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__helper_js__ = __webpack_require__(95);
 /**
  * The one type of internal class.  The XX refers to one of the 8 directions
  * ant that we can check for food:
@@ -385,7 +318,8 @@ var dir_map = [[-1,-1], // 0
 /* harmony default export */ __webpack_exports__["a"] = (IF_XX);
 
 /***/ }),
-/* 19 */
+
+/***/ 167:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -405,7 +339,8 @@ class RAND {
 /* harmony default export */ __webpack_exports__["a"] = (RAND);
 
 /***/ }),
-/* 20 */
+
+/***/ 168:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -430,11 +365,12 @@ class MOVE_XX {
 
 
 /***/ }),
-/* 21 */
+
+/***/ 169:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__basic_generation_js__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__basic_generation_js__ = __webpack_require__(94);
 /**
  * Need a class that manages the genetic operations.  Need a way to get
  * the FPS sorted set. Also need operations that take two individuals and
@@ -448,9 +384,19 @@ class BasicOperate {
 		this.gen = new __WEBPACK_IMPORTED_MODULE_0__basic_generation_js__["a" /* default */]();
 	}
 
+	// For now just returning the one. 
 	crossover(p1, p2){
+		// TODO - Need to play with copies of the parents, want to avoid issues with reselection.
 		// TODO - Implement with crossover
-		return [p1, p2];
+		var cp1 = get_crossover(p1);
+		var cp2 = get_crossover(p2);
+
+		if(cp1[2]){	// If p1's cp is on a truebranch
+			cp1[1].t_branch = cp2[0]; // Place the second trees cp node there.
+		} else {
+			cp1[1].f_branch = cp2[0];
+		}
+		return p1;
 	}
 
 	mutate(p){
@@ -459,15 +405,50 @@ class BasicOperate {
 	}
 }
 
+function get_crossover(p){
+	// Need max depth? Need to deal with non-full trees, too.
+	var cur_depth = 1;
+	var node   = p;	
+	var n = p;
+	var parent = null;
+	var branch = null;
+	var TEST_CHANCE = 0.5
+
+	while( n !== null ){
+		if(Math.random() < TEST_CHANCE){	// TODO - Make this not shitty.
+			parent = node;
+			if(Math.random() < 0.5){
+				branch = true;
+				node = node.t_branch;
+			} else {
+				branch = false;
+				node = node.f_branch;
+			}
+			n = null;
+		} else {
+			parent = n;
+			if(Math.random() < 0.5){
+				n = n.t_branch;
+			} else {
+				n = n.f_branch;
+			}
+		}
+	}
+	return [node, parent, branch];
+}
+
+
 /* harmony default export */ __webpack_exports__["a"] = (BasicOperate);
 
+
 /***/ }),
-/* 22 */
+
+/***/ 170:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__simulation_js__ = __webpack_require__(23);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__helper_js__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__simulation_js__ = __webpack_require__(171);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__helper_js__ = __webpack_require__(95);
 /**
  * The Basic, untyped genetic programming simulation.  Nodes just represent a 
  * boolean check for one of the 8 possible food locations.  Terminals represent
@@ -551,7 +532,8 @@ var dir_map = [[-1, 0], // 0 UP
 
 
 /***/ }),
-/* 23 */
+
+/***/ 171:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -564,7 +546,7 @@ class Simulation {
 		this.size = { x: 20, y: 15 };	// Dimensions of Board
 		this.SCALE = 20;
 		this.loc  = { x: 10, y: 10};	// Location of Bug
-		this.FOOD_FILL = 0.25;			// Amount of food (in % of cells)
+		this.FOOD_FILL = 0.125;			// Amount of food (in % of cells)
 		this.food = build_food_array(this.size, this.FOOD_FILL); // Food Array
 		this.health = 15;
 		this.ticks_alive = 0;
@@ -660,5 +642,68 @@ function calc_offsets(cnv, size, scale){
 
 /* harmony default export */ __webpack_exports__["a"] = (Simulation);
 
+/***/ }),
+
+/***/ 94:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__generator_js__ = __webpack_require__(164);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__nodes_internal_js__ = __webpack_require__(165);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__nodes_external_js__ = __webpack_require__(168);
+/**
+ * Class for generating the Basic program trees.  
+**/
+
+
+
+
+
+class BasicGenerator extends __WEBPACK_IMPORTED_MODULE_0__generator_js__["a" /* default */] {
+	constructor(){
+		super();
+	}
+
+	get_random_internal(){
+		var dir = getRandomInt(0, 8); // One of the 7 [0, 6] possible directions to look
+		if(dir < 7){
+			return new __WEBPACK_IMPORTED_MODULE_1__nodes_internal_js__["a" /* IF_XX */](dir); 
+		} else {
+			return new __WEBPACK_IMPORTED_MODULE_1__nodes_internal_js__["b" /* RAND */]();
+		}
+	}
+
+	get_random_terminal(){
+		var dir = getRandomInt(0, 4); // One of the 4 [0,3] possible directions to move
+		return new __WEBPACK_IMPORTED_MODULE_2__nodes_external_js__["a" /* default */](dir); 
+	}
+}
+
+function getRandomInt(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  //The maximum is exclusive and the minimum is inclusive
+  return Math.floor(Math.random() * (max - min)) + min; 
+}
+
+/* harmony default export */ __webpack_exports__["a"] = (BasicGenerator);
+
+/***/ }),
+
+/***/ 95:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+function fmod( v1, v2 ){
+	var a = v1 % v2;
+	if(a < 0){
+		return v2 + a;
+	} else {
+		return a;
+	}
+}
+/* harmony default export */ __webpack_exports__["a"] = (fmod);
+
 /***/ })
-/******/ ]);
+
+/******/ });

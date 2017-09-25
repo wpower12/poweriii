@@ -7,7 +7,7 @@ class Simulation {
 		this.size = { x: 20, y: 15 };	// Dimensions of Board
 		this.SCALE = 20;
 		this.loc  = { x: 10, y: 10};	// Location of Bug
-		this.FOOD_FILL = 0.25;			// Amount of food (in % of cells)
+		this.FOOD_FILL = 0.125;			// Amount of food (in % of cells)
 		this.food = build_food_array(this.size, this.FOOD_FILL); // Food Array
 		this.health = 15;
 		this.ticks_alive = 0;

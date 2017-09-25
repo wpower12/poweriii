@@ -32,7 +32,7 @@ ol, ul {
     line-height: 18px;
 }
 
-.forceterminal, .antterminal {
+.forceterminal, .antterminal, .pocketterminal {
     padding: 10px;
     overflow: auto;
     position: relative;
@@ -75,3 +75,20 @@ ol, ul {
     box-sizing: border-box;
 }
 
+.pocket-container{
+    width: 750px;
+}
+
+.pocketterminal{
+    padding: 0;
+    overflow: auto;
+}
+
+#canvas_3d {
+    margin-left: 5px;
+    margin-top: 5px;
+}
+
+#canvas_2d {
+    margin-right: 5px;
+}
