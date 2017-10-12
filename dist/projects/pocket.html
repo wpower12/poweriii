@@ -6,21 +6,33 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.terminal/1.5.2/js/jquery.terminal.min.js"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery.terminal/1.5.2/css/jquery.terminal.min.css" rel="stylesheet"/>
   <link href="../style/style.min.css" rel="stylesheet"/>
+  <script src="../js/post_bundle.js"></script>
 </head>
 <body>
   <div class="container pocket-container">
     <div class="antterminal pocketterminal">
       <canvas id="canvas_3d" width="350" height="350" tabindex="0"></canvas>
       <canvas id="canvas_2d" width="350" height="350" tabindex="0"></canvas>
-    </div>
-    <div>
-      This is an example of using a perceptron to seperate a dataset with a hyperplane.  The left side shows the 3D view of the data, where the bias variable has been added to each data point.  The arrow represents the vector of weights learned by a pocket algorithm.  Its normal can be seen slicing the data.  
+      <div class="blurb">
+        <p>This is an example of using a perceptron to seperate a dataset with a hyperplane.  The left side shows the 3D view of the data, where the bias variable has been added to each data point.  The arrow represents the vector of weights learned by a pocket algorithm.  Its normal can be seen slicing the data.</p>
 
-      I still have to finish drawing the intersection of the W-plane and the z=1 plane.  I'm having trouble getting the vectors from THREEjs and the linear algebra library to play nice.
+        <p> You can click and hold to move the camera in 3D. You can also move the normal plane yourself to see how the intersection of the normal plane and the y=1 plane changes the seperation line in the 2D view.  The direction keys can be used to move the W vector in a sphereical coordinate system.  The L/R keys change theta, and the U/D keys change phi. Hold Ctrl to increase the rate of change </p>  
 
-      The code can be found HERE
+        <p>The data is randomly generated on each page load.  The script selects two random points on the plane, then generates two sets of points, centered on these two.  The distribution is a fudgy javascript implementation of the normal distribution.</p>
 
-      The 3D stuff is done with the <a href="https://threejs.org/">ThreeJS</a> library, and the math is handled by <a href="http://mathjs.org/">Mathjs</a>.
+        <p>There are still some bugs with the 2D line drawing, and the actual pocket algorithm.  If you see a very bad, not good W-plane, just give the page a reload.</p>
+
+        <p>The code can be found <a href="https://github.com/wpower12/poweriii/tree/master/src/projects/pocket">here</a>.
+
+        The 3D stuff is done with the <a href="https://threejs.org/">ThreeJS</a> library, and the math is handled by <a href="http://mathjs.org/">Mathjs</a>.</p>
+      </div>
+      <div class="bar">
+            <ul>
+              <li id="home" onclick="window.location.href='/';">[h]ome</li>
+              <li>&nbsp;||&nbsp;</li>
+              <li id="blog" onclick="window.location.href='/blog/';">[b]log</li>
+            </ul>
+        </div>
     </div>
   </div>
   <script src="/js/pocket_bundle.js"></script>

@@ -1,15 +1,16 @@
+
 var THREE = require('three');
-var OrbitControls = require('three-orbit-controls')(THREE)
+var OrbitControls = require('three-orbit-controls')(THREE);
 var math  = require('mathjs');
 
 var canvas_2d = document.getElementById("canvas_2d");
 var canvas_3d = document.getElementById("canvas_3d");
 
-// THREEjs Globals
+// Globals for threejs and drawing on the canvas.
 var scene, camera, renderer, controls, geometry, material, mesh;
-var ctx_2d, points, w_arrow;
+var ctx_2d, points, w_arrow, arrow_helper, w_plane, dir;
 
-// Data Parameters
+// Data Parameters - Points about which the pos/neg examples are centered.
 var xp = getRandomArbitrary(-0.55, 0.35);
 var yp = getRandomArbitrary(-0.55, 0.35);
 var xn = getRandomArbitrary(-0.55, 0.35);
@@ -20,22 +21,19 @@ init();
 animate(); 
 
 function init() {
-    // Data Init
     points = get_random_data(xp, yp, xn, yn, n, r); 
     init_3d();
-    init_2d();
-
+    init_2d()
+    add_listeners();
 }
 
 function init_3d(){
-    // 3D Init
-    var point_cloud_p = generatePoints(points[0], new THREE.Color(0,1,0));
-    var point_cloud_n = generatePoints(points[1], new THREE.Color(1,0,0));
-
+    // threejs core stuff.
     renderer = new THREE.WebGLRenderer( {canvas: canvas_3d} );
     renderer.setSize( canvas_3d.width, canvas_3d.height );
-
     scene = new THREE.Scene();
+
+    // Camera
     camera = new THREE.Camera();
     camera = new THREE.PerspectiveCamera( 75, canvas_3d.width/canvas_3d.height, 1, 10000 );
     camera.position.x = 1.5;
@@ -43,32 +41,44 @@ function init_3d(){
     camera.position.z = 2.0;
     camera.lookAt(new THREE.Vector3(0,0,0));
 
+    // Controls
     controls = new OrbitControls( camera, renderer.domElement );
+    controls.enableKeys = false;
     var d = Math.sqrt(camera.position.x*camera.position.x+camera.position.y*camera.position.y+camera.position.z*camera.position.z);
     controls.minDistance = d;
     controls.maxDistance = d;
 
-    // Actually get the vector from the data. 
+    // Data
+    var point_cloud_p = generatePoints(points[0], new THREE.Color(0,1,0));
+    var point_cloud_n = generatePoints(points[1], new THREE.Color(1,0,0));
+    scene.add(point_cloud_p);
+    scene.add(point_cloud_n);
+
+    // W Vector Arrow
     w_arrow = calculate_w(points);
-    var dir = new THREE.Vector3().fromArray(w_arrow.toArray());
+    dir = new THREE.Vector3().fromArray(w_arrow.toArray());
     dir.normalize();
     var origin = new THREE.Vector3(0,0,0);
-    var length = 1;
     var hex = 0xffff00;
+    arrow_helper = new THREE.ArrowHelper( dir, origin, 1, hex );
+    scene.add( arrow_helper );
 
-    var arrowHelper = new THREE.ArrowHelper( dir, origin, length, hex );
-    scene.add( arrowHelper );
-
+    // W Vectors Normal Plane
     var plane_geo = new THREE.PlaneGeometry(3, 3);
     var material = new THREE.MeshBasicMaterial( {color: 0xCCCCCC, side: THREE.DoubleSide} );
-    var w_plane = new THREE.Mesh( plane_geo, material );
+    w_plane = new THREE.Mesh( plane_geo, material );
     w_plane.lookAt(dir);
     scene.add( w_plane);
     
-    var gridHelper = new THREE.GridHelper( 4, 10 );
-    scene.add( gridHelper );
-    scene.add(point_cloud_p);
-    scene.add(point_cloud_n);
+    // 0-Plane
+    var gridHelper_0 = new THREE.GridHelper( 2, 10 );
+    scene.add( gridHelper_0 );
+
+    // 1-Plane
+    var gridHelper_1 = new THREE.GridHelper( 2, 10 );
+    gridHelper_1.position.y = 1;
+    scene.add( gridHelper_1 );
+
     scene.add( new THREE.AxisHelper( 1 ) );
 }
 
@@ -79,21 +89,90 @@ function init_2d(){
     ctx_2d.fillRect(0,0,350, 350);
 
     draw_points_2d( ctx_2d, points );
-    // Busted for now.  Gotta get the method calls down. 
-    // draw_line_2d( ctx_2d, w_arrow );
+    draw_line_2d( ctx_2d, dir );
+}
+
+function add_listeners(){
+    window.onkeydown = function(e){
+        var key = e.keyCode ? e.keyCode : e.which;
+        var angles = calculate_angles(dir);
+        
+        update_flag = true;
+        var delta = 0.005;
+        if( e.ctrlKey ){
+            delta = 0.015;
+        } 
+
+        switch(key){
+            case 37: // Left - (<theta/off z>, <phi/about z, old_angles)
+                angles = tweak_angles( 0, delta, angles );
+                break;
+            case 39: // Right
+                angles = tweak_angles( 0, -1*delta, angles );
+                break;
+            case 38: // Up
+                angles = tweak_angles( -1*delta, 0, angles );
+                break;
+            case 40: // Down
+                angles = tweak_angles( delta, 0, angles );
+                break;   
+            default:
+                update_flag = false;
+                break; 
+        }
+
+        if(update_flag){
+            var new_dir = get_3vec(angles);
+            arrow_helper.setDirection( new_dir );
+            w_plane.lookAt( new_dir );
+            dir = new_dir;
+            renderer.render(scene, camera);
+            init_2d();  
+        }
+    }
+}
+
+function calculate_angles(dir){
+    var theta   = Math.acos(dir.z);
+    var phi = Math.atan2(dir.y, dir.x);
+    return [theta, phi];
+}
+
+function tweak_angles( d_theta, d_phi, angles ){ 
+    var new_theta = angles[0]+d_theta;
+    var new_phi   = angles[1]+d_phi;
+
+    if(new_theta < 0){
+        new_theta = Math.PI;
+    } else if(new_theta > Math.PI){
+        new_theta = 0;
+    }
+
+    if(new_phi < 0){
+        new_phi = 2*Math.PI;
+    } else if(new_phi > 2*Math.PI){
+        new_phi = 0;
+    }
+    return [new_theta, new_phi];
+}
+
+function get_3vec(angles){  
+    var theta = angles[0];
+    var phi   = angles[1];
+    var x = Math.sin(theta)*Math.cos(phi);
+    var y = Math.sin(theta)*Math.sin(phi);
+    var z = Math.cos(theta);
+    return new THREE.Vector3(x,y,z);
 }
 
 function draw_line_2d( ctx, w ){
-    var size = {x: ctx.canvas.width, y: ctx.canvas.height};
+    var size = {x: ctx.canvas.width*1.0, y: ctx.canvas.height*1.0};
     var origin = {x: 0.5*size.x, y: 0.5*size.y};
-    var p1 = {x: -1, y: 0};
-    var p2 = {x: 1, y: 0};
+    var p1 = {x: -1.0, y: 0};
+    var p2 = {x: 1.0, y: 0};
 
-    var w_3 = new THREE.Vector3().fromArray(w.toArray());
-    // w_3.normalize();
-
-    p1.y = line_eqn(p1.x, w_3.normalize().toArray());
-    p2.y = line_eqn(p2.x, w_3.normalize().toArray());
+    p1.y = line_eqn(p1.x, w);
+    p2.y = line_eqn(p2.x, w);
 
     ctx.beginPath();
     ctx.moveTo(p1.x*size.x+origin.x, p1.y*size.y+origin.y);
@@ -103,8 +182,7 @@ function draw_line_2d( ctx, w ){
 }
 
 function line_eqn( x, w_a ){
-    // var w_a = w.toArray();
-    return (1/w_a[1])*(-1*(w_a[2]) - w_a[0]*x);
+    return (-1/w_a.z)*(w_a.y + w_a.x*x);
 }
 
 function calculate_w(points){
@@ -122,6 +200,7 @@ function calculate_w(points){
 
     var X = math.matrix(full_x);
     var y_n = math.transpose(math.matrix(full_y));
+
     var W = pocket_algo( X, y_n, 1000 );
 
     return W;
@@ -129,7 +208,7 @@ function calculate_w(points){
 
 function pocket_algo( X, y_n, itr ){
     var best = null;
-    var best_err = null;
+    var best_err = Number.MAX_SAFE_INTEGER;
     var W = math.add(math.zeros(3), 0.05);
     var i = 0;
     var y_p;
@@ -138,7 +217,8 @@ function pocket_algo( X, y_n, itr ){
         // Evaluate Error
         y_p = math.sign(math.multiply(math.transpose(W), math.transpose(X)));
         err = math.sum(math.abs(math.compare(y_n, y_p)));  
-        if( best == null || best_err < err ){
+
+        if( err < best_err ){
             best = W;
             best_err = err;
         }
@@ -154,8 +234,7 @@ function pocket_algo( X, y_n, itr ){
 
         i++;  
     }
-    // Tracking the best in the pocket isn't working?  Idk.  Just returning last W for now.
-    return W;
+    return best;
 }
 
 function get_random_data( xp, yp, xn, yn, n, r){
@@ -210,9 +289,6 @@ function generatePoints(points, color){
 
 
 function draw_points_2d(ctx, points){
-    // TODO - Change the points locations to be relative to the orgin you have, not the
-    // actual origin of the canvas.  
-
     var size = {x: ctx.canvas.width, y: ctx.canvas.height};
     var origin = {x: 0.5*size.x, y: 0.5*size.y};
     
@@ -227,7 +303,6 @@ function draw_points_2d(ctx, points){
     ctx.lineTo(origin.x+0.05*size.x, origin.y);
     ctx.stroke();
 
-    // Draw positives:
     var r = size.x * 0.005;
     ctx.strokeStyle = "green";
     for( var p = 0; p < points[0].length; p++){

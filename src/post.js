@@ -1,5 +1,4 @@
 document.onkeyup = function(e){
-	console.log(e.keyCode);
 	switch(e.keyCode){
 		case 72: // h
 			window.location.href = "/"
